@@ -21,14 +21,36 @@ html {
   position: absolute;
   top: 0px;
   left: 40px;
-  padding: 50px 40px 50px 40px;
+  padding: 40px;
 }
 hr {
   width: 100%;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
-h6 {
+h1 {
+  margin-bottom: 10px;
+}
+.subtitle {
   color: rgba(237, 251, 255, 0.5);
   font-style: italic;
+  font-weight:bold;
+  font-size: 80%;
+}
+p ul li {
+  color: rgba(237, 251, 255, 0.8);
+}
+a {
+  color: rgb(151, 189, 199);
+}
+a:visited {
+  color: rgb(114, 146, 156);
+}
+.date {
+  color: rgba(237, 251, 255, 0.5);
+  font-weight:bold;
+  font-size: 80%;
+  margin-left: 10px;
 }
 
 </style>
@@ -37,12 +59,57 @@ h6 {
 
 <div class="column">
   <h1>Frencil's Corner</h1>
-  <h6>Frencil is Christopher Clark, a guy who likes science, math, and programming.</h6>
+  <div class="subtitle">Frencil is Christopher Clark, a guy who likes science, math, and programming.</div>
   <hr>
-  <h2>Title</h2>
-  <h6>date</h6>
-  <p>Bar</p>
+
+  <!-- 2014-11-09 -->
+  <h2>Getting back into D3 <span class="date">2014-11-09</span></h2>
+  <p>I spent most of the weekend dusting off an <a href="https://github.com/Frencil/galaxy_of_nuclides">old project</a>. The point of the project is mainly to play around with all the neat data surrounding elements and their nuclides. Maybe it'll also be a useful tool for teaching folks a bit more about atomic physics, too.</p>
+  <p>A big part of the project was just <i>getting</i> the data in the first place, which I was able to get from the Brookhaven National Laboratory, but it needed a bit of massaging. Ultimately I created two CSV files: <a href="https://github.com/Frencil/galaxy_of_nuclides/blob/master/data/elements.csv">one for all elements on the periodic table of elements</a> and <a href="https://github.com/Frencil/galaxy_of_nuclides/blob/master/data/nuclides.csv">one for all nuclides on the chart of nuclides</a>.</p>
+  <p>When I set out to port the two year old project from its original language of Processing to the web it was obvious that it needed to be built natively in JavaScript (yeah, I tried Processing.js but I was using some Java datatypes that Processing.js didn't support and the whole thing was a crutch anyway). Unsurprisingly I found a lot of different JavaScript libraries out there for doing interactive graphics, but it wasn't clear which one to use. I had something going for a while with <a href="http://www.createjs.com/#!/CreateJS">Create.js</a> but found I still needed a lot of helper libraries too, like jQuery and its associated CSV parsing lib. The project felt bloated before I even had any data parsed. It stalled and went back on the shelf.</p>
+  <p>On coming back to the nuclides project with fresh vigor and perspective I remembered the gold standard: <b>D3</b>. I used D3 at SparkFun to build force-directed graph to display our company org chart. That was my first real look at the software, and it was adapted from an example I found online. The example was close enought to my use case - a means of representing relationships between people - that adaptation didn't require an intimate understanding of how everything was put together.</p>
+  <p>Understanding that D3 would ultimately give the nuclides project the low-level control and flexibility I knew I would probably need in the long run I started from scratch, learning how to parse data and bind it to objects with selectors. Fortunately from another SparkFun project creating a detailed SVG map of the corporate headquarters and some side business helping patch a bug in a library I found for panning and zooming embedded SVGs I had some good SVG experience that was fresh in mind.</p>
+  <p>The toughest part starting a D3 project with highly structured but complex data, as I found, is the lack of firm knowledge of what the visualization should look like. I know I want to represent my data as the periodic table and as the chart of nuclides. I know I'll want to interactively transition between them to show how they connect, as it's worked in the Processing version for years. Approaching the layout of the SVG itself has been very much trial and error thus far. At first I was just appending <tt>&lt;rect&gt;</tt> objects to the <tt>&lt;svg&gt;</tt> but quickly learned that <tt>&lt;text&gt;</tt> can't be a child of a <tt>&lt;rect&gt;</tt> such that it would show up how your would expect. If I wanted to associate elements it meant <tt>&lt;g&gt;</tt> tags. Lots and lots of <tt>&lt;g&gt;</tt> tags.</p>
+  <p>At this weekend's stopping point here's a general summry of how I've chosen to structure the <tt>&lt;svg&gt;</tt>:</p>
+  <ul>
+    <li>All data is loaded through D3's built-in functions.</li>
+    <li>All svg elements are created relying as much as possible on the conventions defined in D3's API (e.g. using <tt>.each()</tt> instead of <tt>foreach</tt> loops).</li>
+    <li>All top-level elements in the <tt>&lt;svg&gt;</tt> are <tt>&lt;g&gt;</tt> tags, and there aren't many of them at the top level, so I can easily nuke and redraw the entire thing (for easier dynamic resizing).</li>
+    <li>I have three general classes of <tt>&lt;g&gt;</tt> objects:
+      <ul>
+        <li><tt>group</tt> is for a <tt>&lt;g&gt;</tt> that contains a list of other <tt>&lt;g&gt;</tt>s (e.g. of the elements or all the nuclides for an element).</li>
+        <li><tt>shell</tt> is for a <tt>&lt;g&gt;</tt> that represents a single object from the data set and all of its constituent pieces, be they shown or not (e.g. a single element or nuclide).</li>
+        <li><tt>display</tt> is for all the <tt>&lt;rect&gt;</tt>, <tt>&lt;text&gt;</tt>, and whatever else is used to actually display a thing.</li>
+      </ul>
+    </li>
+    <li>The general classes of <tt>&lt;g&gt;</tt> tags are used to aid selection of collections of elements that need to move and change together.</li>
+    <li><tt>&lt;g&gt;</tt> tags are positioned using dynamically generated <tt>translate()</tt> functions with <tt>transform</tt> attributes. This allows for positioning elements inside groups using relative coordinates and dramatically cuts down on coordinate translation overhead that I have to code myself.</li>
+  </ul>
+  <p>Given the above I've ended up with an <tt>&lt;svg&gt;</tt> that looks something like this:</p>
+  <pre>
+&lt;svg&gt;
+  &lt;g class="element_group"&gt;
+    &lt;g class="element_shell"&gt;
+      &lt;g class="element_display"&gt;
+        &lt;rect&gt;
+        &lt;text&gt;
+      &lt;/g&gt;
+      &lt;g class="nuclide_group"&gt;
+        &lt;g class="nuclide_shell"&gt;
+          &lt;g class="nuclide_display"&gt;
+            &lt;rect&gt;
+          &lt;/g&gt;
+        &lt;/g&gt;
+        ...
+      &lt;/g&gt;
+    &lt;/g&gt;
+    ...
+  &lt;/g&gt;
+&lt;/svg&gt;
+  </pre>
+  <p>I've had this setup for a day and I like it. The next hurdle is to really leverage transitions to make the periodic-table-to-chart-of-nuclides animation (and it's reverse) look as neat as it does in my head. I hope I can get it working cleanly without having to rethink all this scaffolding.
   <hr>
+  
 </div>
 
 </body>
