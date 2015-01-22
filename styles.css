@@ -1,0 +1,78 @@
+html {
+  background: url(Embers.jpg) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  font-family: Helvetica, Arial, sans-serif;
+  color: rgb(237, 251, 255);
+}
+
+.column {
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: 40px;
+  padding: 0px;
+  margin: 0px;
+}
+
+.inner_left_column { 
+  width: 785px;
+  min-height: 100vh;
+  float: left;
+  background-color: rgb(34, 37, 38);
+  padding: 30px 20px 30px 30px;
+  margin: 0px;
+}
+
+.inner_right_column { 
+  width: 130px;
+  min-height: 10vh;
+  float: left;
+  padding: 30px 30px 60px 20px;
+  margin: 0px;
+  background-color: rgba(34, 37, 38, 0.8);
+  text-align: right;
+}
+
+hr {
+  width: 100%;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+h1 {
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  color: rgba(237, 251, 255, 0.5);
+  font-style: italic;
+  font-weight:bold;
+  font-size: 80%;
+}
+
+p ul li {
+  color: rgba(237, 251, 255, 0.8);
+}
+
+a {
+  color: rgb(151, 189, 199);
+}
+
+a:visited {
+  color: rgb(114, 146, 156);
+}
+
+.inner_right_column a {
+  text-decoration: none;
+}
+
+.date {
+  color: rgba(237, 251, 255, 0.5);
+  font-weight:bold;
+  font-size: 80%;
+  margin-left: 10px;
+}
+
