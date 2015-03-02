@@ -84,7 +84,7 @@ a:visited {
   clear: both;
 }
 
-#nav_posts_prev { 
+#nav_posts_prev {
   float: left;
   width: 50%;
 }
@@ -93,4 +93,22 @@ a:visited {
   float: right;
   width: 50%;
   text-align: right;
+}
+
+figure { 
+  text-align: center;
+}
+
+figcaption {
+  margin-top: 10px;
+  font-size: 85%;
+  font-style: italic;
+  color: rgb(213, 226, 230);
+}
+
+blockquote { 
+  font-size: 120%;
+  rgb(213, 226, 230);
+  font-family: "Times New Roman", Georgia, Serif;
+  font-style: italic;
 }
