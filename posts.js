@@ -38,7 +38,7 @@ render = {
       document.getElementById("recent_posts").innerHTML = "<i>none</i>\n";
     } else {
       var limit = Math.min(this.posts.length, 4);
-      for (var i = this.posts.length - 1; i > this.posts.length - limit - 1; i--) {
+      for (var i = this.posts.length - 2; i > this.posts.length - limit - 2; i--) {
         var post = this.posts[i];
         document.getElementById("recent_posts").innerHTML += "<h3><tt>" + post.date + ":</tt> "
                                                           +  "<a href=\"archives/" + post.url + "\">" + post.title + "</a></h3>\n";
