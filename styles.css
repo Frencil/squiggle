@@ -46,6 +46,10 @@ h1 {
   margin-bottom: 10px;
 }
 
+h1 a { 
+  text-decoration: none;
+}
+
 .subtitle {
   color: rgba(237, 251, 255, 0.5);
   font-style: italic;
@@ -76,3 +80,17 @@ a:visited {
   margin-left: 10px;
 }
 
+#nav_posts { 
+  clear: both;
+}
+
+#nav_posts_prev { 
+  float: left;
+  width: 50%;
+}
+
+#nav_posts_next { 
+  float: right;
+  width: 50%;
+  text-align: right;
+}

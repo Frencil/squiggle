@@ -4,6 +4,7 @@
 <head>
   <title>Frencil's Corner</title>
   <link rel="stylesheet" type="text/css" href="styles.css">
+  <script type="text/javascript" src="posts.js"></script>
 </head>
 
 <body>
@@ -12,11 +13,11 @@
   
   <div class="inner_left_column">
 
-    <h1>Frencil's Corner</h1>
+    <h1><a href="">Frencil's Corner</a></h1>
     <div class="subtitle">Frencil is Christopher Clark, a guy who likes science, math, and programming.</div>
     <hr>
 
-        <!-- 2015-01-21 -->
+    <!-- 2015-01-21 -->
     <a name="2015-01-21"></a>
     <h2>Using GitHub Pages as a CDN <span class="date">2015-01-21</span></h2>
     <p>I recently began playing with <a href="20141201.html">Cesium</a>, a JavaScript-based open source Earth visualization engine. My use case is the Great North American Eclipse in August of 2017, the first total solar eclipse to track across the continental United States in many decades. Using Cesium as a mapping engine with NASA data of the eclipse track overlaid I can explore wilderness areas all along the hundred-kilometer-wide track that stretches from Washington State to South Carolina, in hopes of finding an ideal camping destination for August 21, 2017.</p>
@@ -40,9 +41,8 @@
 
     <h2>Recent Posts</h2>
 
-    <h3><tt>2014-12-17:</tt> <a href="archives/20141217.html">When the Big Five become the Big Four</a></h3>
-    <h3><tt>2014-12-01:</tt> <a href="archives/20141201.html">An Initial Look at Cesium</a></h3>
-    <h3><tt>2014-11-12:</tt> <a href="archives/20141112.html">When another you creates branches</a></h3>
+    <div id="recent_posts">
+    </div>
 
   </div>
 
@@ -59,6 +59,8 @@
   </div>
   
 </div>
+
+<iframe id="raw_posts" src="posts.txt" onload="render.loadPosts('recent');" style="display: none;"></iframe>
 
 </body>
 </html>

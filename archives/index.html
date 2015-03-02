@@ -4,6 +4,7 @@
 <head>
   <title>Frencil's Corner</title>
   <link rel="stylesheet" type="text/css" href="../styles.css">
+  <script type="text/javascript" src="../posts.js"></script>
 </head>
 
 <body>
@@ -12,21 +13,12 @@
   
   <div class="inner_left_column">
 
-    <h1>Frencil's Corner</h1>
+    <h1><a href="../">Frencil's Corner</a></h1>
     <div class="subtitle">Frencil is Christopher Clark, a guy who likes science, math, and programming.</div>
     <hr>
 
-    <h2>Archives - 2015</h2>
-
-    <h3><tt>2015-01-21:</tt> <a href="20150121.html">Using GitHub Pages as a CDN</a></h3>
-    
-    <h2>Archives - 2014</h2>
-
-    <h3><tt>2014-12-17:</tt> <a href="20141217.html">When the Big Five become the Big Four</a></h3>
-    <h3><tt>2014-12-01:</tt> <a href="20141201.html">An Initial Look at Cesium</a></h3>
-    <h3><tt>2014-11-12:</tt> <a href="20141112.html">When another you creates branches</a></h3>
-    <h3><tt>2014-11-09:</tt> <a href="20141109.html">Getting back into D3</a></h3>
-    <h3><tt>2014-10-30:</tt> <a href="20141030.html">Initializing Frencil's Corner</a></h3>
+    <div id="archives">
+    </div>
 
     <br><hr><br>
 
@@ -47,6 +39,8 @@
   </div>
   
 </div>
+
+<iframe id="raw_posts" src="../posts.txt" onload="render.loadPosts('archives');" style="display: none;"></iframe>
 
 </body>
 </html>

@@ -4,6 +4,7 @@
 <head>
   <title>Frencil's Corner</title>
   <link rel="stylesheet" type="text/css" href="../styles.css">
+  <script type="text/javascript" src="../posts.js"></script>
 </head>
 
 <body>
@@ -12,7 +13,7 @@
   
   <div class="inner_left_column">
 
-    <h1>Frencil's Corner</h1>
+    <h1><a href="../">Frencil's Corner</a></h1>
     <div class="subtitle">Frencil is Christopher Clark, a guy who likes science, math, and programming.</div>
     <hr>
 
@@ -36,6 +37,13 @@
       2015-01-21
     </div>
 
+    <br><hr><br>
+
+    <div id="nav_posts">
+      <div id="nav_posts_prev"></div>
+      <div id="nav_posts_next"></div>
+    </div>
+
   </div>
 
   <div class="inner_right_column">
@@ -51,6 +59,8 @@
   </div>
   
 </div>
+
+<iframe id="raw_posts" src="../posts.txt" onload="render.loadPosts('nav');" style="display: none;"></iframe>
 
 </body>
 </html>
