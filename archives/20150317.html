@@ -3,8 +3,8 @@
 
 <head>
   <title>Frencil's Corner</title>
-  <link rel="stylesheet" type="text/css" href="styles.css">
-  <script type="text/javascript" src="posts.js"></script>
+  <link rel="stylesheet" type="text/css" href="../styles.css">
+  <script type="text/javascript" src="../posts.js"></script>
 </head>
 
 <body>
@@ -13,7 +13,7 @@
   
   <div class="inner_left_column">
 
-    <h1><a href="">Frencil's Corner</a></h1>
+    <h1><a href="../">Frencil's Corner</a></h1>
     <div class="subtitle">Frencil is Christopher Clark, a guy who likes science, math, and programming.</div>
     <hr>
 
@@ -46,7 +46,6 @@
     <p>All of these gymnastics, complicated in their own way, get a reasonable approximation for a proof-of-concept of an umbral shadow. Obviously this entire approach is fundamentally flawed as I'm trying to draw a two dimensional shape (an ellipse) onto a three dimensional ellipsoid. Umbral shadows for eclipses can be pretty big&mdash;hundreds of kilometers across&mdash;so the curvature of the Earth is something that can't just be smoothed away.</p>
     <p>So, lesson learned: accurate umbral shadows are tricky business! At any rate <a href="http://eclipsetracks.org">EclipseTracks.org</a> is live with those &quot;good enough for now&quot; approximations of umbral shadows with much more accurate track polylines. After this Friday's solar eclipse we've got two lined up in 2016: <a href="http://eclipse.gsfc.nasa.gov/SEplot/SEplot2001/SE2016Mar09T.GIF">March 9th</a> that stretches across Indonesia and the South Pacific and <a href="http://eclipse.gsfc.nasa.gov/SEpath/SEpath2001/SE2016Sep01Apath.html">September 1st</a> that stretches across southern Africa and the Indian Ocean.</p>
     <p>The big one for folks in my corner of the world isn't until <a href="http://www.greatamericaneclipse.com/nation/">August 21st, 2017</a>. That's the one that set off this project in the first place, as I know I'll be camping in some wilderness along that track somewhere but just don't know quite where just yet. Maybe by then I'll have proper shadow rendering with Besselian elements, and then I can use EclipseTracks.org to find the best camping spot in the country.</p>
-    
     <div class="subtitle">
       --<br>
       <br>
@@ -56,9 +55,9 @@
 
     <br><hr><br>
 
-    <h2>Recent Posts</h2>
-
-    <div id="recent_posts">
+    <div id="nav_posts">
+      <div id="nav_posts_prev"></div>
+      <div id="nav_posts_next"></div>
     </div>
 
   </div>
@@ -67,8 +66,8 @@
     <h1>&#9732;</h1>
     <div class="subtitle">&#9883;</div>
     <hr>
-    <h3><a href="">Latest Post</a></h3>
-    <h3><a href="archives/">Archives</a></h3>
+    <h3><a href="../">Latest Post</a></h3>
+    <h3><a href="../archives/">Archives</a></h3>
     <hr>
     twitter: <a href="https://twitter.com/frencil">@Frencil</a>
     <br>
@@ -77,7 +76,7 @@
   
 </div>
 
-<iframe id="raw_posts" src="posts.txt" onload="render.loadPosts('recent');" style="display: none;"></iframe>
+<iframe id="raw_posts" src="../posts.txt" onload="render.loadPosts('nav');" style="display: none;"></iframe>
 
 </body>
 </html>
