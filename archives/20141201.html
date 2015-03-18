@@ -1,25 +1,39 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-
-<head>
-  <title>Frencil's Corner</title>
-  <link rel="stylesheet" type="text/css" href="../styles.css">
+<html lang="en">
+  <meta charset="utf-8">
+  <title>Frencil's Corner ~ An Initial Look at Cesium ~ 2014-12-01</title>
+  <meta name="author" content="Christopher Clark">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/skeleton.css">
+  <link rel="stylesheet" href="css/squiggle.css">
+  <link rel="icon" type="image/png" href="../favicon.png">
   <script type="text/javascript" src="../posts.js"></script>
 </head>
-
 <body>
 
-<div class="column">
-  
-  <div class="inner_left_column">
+  <div class="container">
+    <div class="row">
+      <div class="ten columns">
+        <h1><a href="../">Frencil's Corner</a></h1>
+        <div class="subtitle">Frencil is Christopher Clark, a guy who likes science, math, and programming.</div>
+      </div>
+      <div class="two columns" style="text-align: right;">
+        <h1>&#9732;</h1>
+        <div class="subtitle">&#9883;</div>
+      </div>
+    </div>
+    <div class="row">
+      <hr>
+    </div>
 
-    <h1><a href="../">Frencil's Corner</a></h1>
-    <div class="subtitle">Frencil is Christopher Clark, a guy who likes science, math, and programming.</div>
-    <hr>
+    <div class="row">
+      <div class="ten columns">
 
     <!-- 2014-12-01 -->
     <a name="2014-12-01"></a>
-    <h2>An Initial Look at Cesium <span class="date">2014-12-01</span></h2>
+    <h2>An Initial Look at Cesium ~ <span class="date">2014-12-01</span></h2>
     <p>I spent some of last night playing with <a href="http://cesiumjs.org/">Cesium</a>. In a nutshell it's a web-based open-source Google Earth (though I'm sure the developers prefer that Google Earth be known as the proprietary client-installed Cesium). More clearly, it's a JavaScript WebGL platform for creating an interactive model of the planet Earth. And it's cool.</p>
     <p>My first challenge was getting WebGL running. <a href="http://get.webgl.org/">WebGL</a> is a fairly new thing and so the open source ATI Drivers for Linux don't support it. In typical Linux fashion, installing the proprietary drivers did <i>not</i> happen cleanly. Immediately after installation the default theme for Mint 16 broke in a variety of ways. Attempting to troubleshoot the problem led me to the dreaded partial dist-upgrade. For a while there I was a thousand miles from home (at the in-laws' for Thnksgiving) and my travel laptop wouldn't even boot to a command prompt. Next time I travel I'm bringing an emergency USB bootable distro of some kind.</p>
     <p>It turned out that my x server was locking up and crashing becuase of some deep incompatibility between the still installed proprietary graphics drivers and the partially upgraded OS. Once I found my way back to a command line I went full upgrade to Mint 17, blasted and reinstalled the ATI drivers, and got everything working again.</p>
@@ -31,7 +45,10 @@
     <p>On August 21, 2017 there will be a total solar eclipse that cuts directly across North America. My excitement for this simply can't be understated. When I was in elementary school the first partial solar eclipse in my region of the world happened and I saw my first crescent sun. Countless lunar eclipses later we were treated to another partial solar eclipse <a href="https://twitter.com/Frencil/status/525414443837325314">just this past October</a>, so I built a solar filter for my telescope. But I've never seen a total solar eclipse, never observed the sun's corona with my own (protected) eyes.</p>
     <p>Eclipses are strange beasts to conceptualize on their full four-dimensional scale. It's a shadow that streaks across the surface of the Earth in a slow, undulating arc. For this eclipse in partiular the swath is wide and stretches from Washington state to South Carolina. I'll be camping, somehwere, but <i>where</i>? There's so much excellent wilderness along the track, and while there are <a href="http://www.greatamericaneclipse.com/">abundant maps</a> available they are all static images with static scale. Cesium, however, is interactive - zoomable, panable, and able to import satellite imagery, road maps, and so much other public data. It's a giant dynamic map. All it needs are details of the event.</p>
     <p>Using some <a href="http://eclipse.gsfc.nasa.gov/SEpath/SEpath2001/SE2017Aug21Tpath.html">coarse NASA waypoint data</a> for the northern/southern limits and central line of the eclipse track I was able to produce this:</p>
-    <center><a href="img/cesium_eclipse_track.jpg"><img src="img/cesium_eclipse_track.jpg"></a></center>
+    <figure>
+      <a href="img/cesium_eclipse_track.jpg"><img src="img/cesium_eclipse_track.jpg"></a>
+      <figcaption>Initial rendering of the 2017 North American solar eclipse in Cesium</figcaption>
+    </figure>
     <p>The most satisfying moment, of course, was going from a proof-of-concept for polyline rendering (three points) to the full data set. There was the swath I'd seen in so many static images, landing right where I expected it to be, and now I could navigate along the track at almost any scale I wanted!</p>
     <p>The app still needs a <i>lot</i> of work, and it's not deployed anywhere just yet. I suppose I have until the summer of 2017, but it should be up in the next few months all the same. I next plan to convert the main polylines into a more portable and organized <a href="https://github.com/AnalyticalGraphicsInc/cesium/wiki/CZML-Guide">CZML</a> document, then begin learning how animations in Cesium work. Cesium has a timeline feature that's quite easy to use, so it was trivial to loop the virtual clock over the time frame of the eclipse on that future August afternoon. The minimum viable product, therefore, is a traveling shadow so any user could dial in their time to see exactly where the moon's shadow falls at any time to any level of detail. Now <i>that's</i> something I want to play with.</p>
 
@@ -49,23 +66,25 @@
       <div id="nav_posts_next"></div>
     </div>
 
+    <br><br>
+        
+      </div>
+      
+      <div class="two columns">
+        <h5><a href="../">Latest Post</a></h5>
+        <h5><a href="../archives/">Archives</a></h5>
+        <hr>
+        twitter: <a href="https://twitter.com/frencil">@Frencil</a>
+        <br>
+        github: <a href="https://github.com/Frencil">Frencil</a>
+        <br>
+        linkedin: <a href="https://www.linkedin.com/in/frencil">Frencil</a>
+      </div>
+    </div>
   </div>
 
-  <div class="inner_right_column">
-    <h1>&#9732;</h1>
-    <div class="subtitle">&#9883;</div>
-    <hr>
-    <h3><a href="../">Latest Post</a></h3>
-    <h3><a href="../archives/">Archives</a></h3>
-    <hr>
-    twitter: <a href="https://twitter.com/frencil">@Frencil</a>
-    <br>
-    github: <a href="https://github.com/Frencil">Frencil</a>
-  </div>
+  <iframe id="raw_posts" src="../posts.txt" onload="render.loadPosts('nav');" style="display: none;"></iframe>
   
-</div>
-
-<iframe id="raw_posts" src="../posts.txt" onload="render.loadPosts('nav');" style="display: none;"></iframe>
-
 </body>
+
 </html>

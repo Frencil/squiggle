@@ -1,0 +1,82 @@
+html {
+  height: 100%;
+}
+
+body { 
+  height: 100%;
+  background-attachment: fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-image: -webkit-linear-gradient(rgb(253, 254, 255), rgb(232, 238, 240));
+  background-image: -o-linear-gradient(rgb(253, 254, 255), rgb(232, 238, 240));
+  background-image: -moz-linear-gradient(rgb(253, 254, 255), rgb(232, 238, 240));
+  background-image: linear-gradient(rgb(253, 254, 255), rgb(232, 238, 240));
+}
+
+hr {
+  width: 100%;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+h1 {
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+h1 a, h2 a, h3 a, h4 a, h5 a { 
+  text-decoration: none;
+}
+
+.subtitle {
+  color: rgba(107, 113, 115, 0.8);
+  font-style: italic;
+  font-weight:bold;
+  font-size: 80%;
+}
+
+p ul li {
+  color: rgba(107, 113, 115, 0.8);
+}
+
+a {
+  color: rgb(71, 140, 158);
+}
+
+a:hover {
+  color: rgb(15, 152, 189);
+}
+
+.inner_right_column a {
+  text-decoration: none;
+}
+
+.date {
+  color: rgba(107, 113, 115, 0.8);
+  font-size: 80%;
+}
+
+#nav_posts_next { 
+  text-align: right;
+}
+
+figure { 
+  text-align: center;
+}
+
+figcaption {
+  margin-top: 10px;
+  font-size: 85%;
+  font-style: italic;
+  color: rgb(76, 80, 82);
+}
+
+blockquote { 
+  font-size: 120%;
+  rgb(76, 80, 82);
+  font-family: "Times New Roman", Georgia, Serif;
+  font-style: italic;
+}

@@ -1,25 +1,39 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-
-<head>
-  <title>Frencil's Corner</title>
-  <link rel="stylesheet" type="text/css" href="../styles.css">
+<html lang="en">
+  <meta charset="utf-8">
+  <title>Frencil's Corner ~ Using GitHub Pages as a CDN ~ 2015-01-21</title>
+  <meta name="author" content="Christopher Clark">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/skeleton.css">
+  <link rel="stylesheet" href="css/squiggle.css">
+  <link rel="icon" type="image/png" href="../favicon.png">
   <script type="text/javascript" src="../posts.js"></script>
 </head>
-
 <body>
 
-<div class="column">
-  
-  <div class="inner_left_column">
+  <div class="container">
+    <div class="row">
+      <div class="ten columns">
+        <h1><a href="../">Frencil's Corner</a></h1>
+        <div class="subtitle">Frencil is Christopher Clark, a guy who likes science, math, and programming.</div>
+      </div>
+      <div class="two columns" style="text-align: right;">
+        <h1>&#9732;</h1>
+        <div class="subtitle">&#9883;</div>
+      </div>
+    </div>
+    <div class="row">
+      <hr>
+    </div>
 
-    <h1><a href="../">Frencil's Corner</a></h1>
-    <div class="subtitle">Frencil is Christopher Clark, a guy who likes science, math, and programming.</div>
-    <hr>
-
+    <div class="row">
+      <div class="ten columns">
+        
     <!-- 2015-01-21 -->
     <a name="2015-01-21"></a>
-    <h2>Using GitHub Pages as a CDN <span class="date">2015-01-21</span></h2>
+    <h2>Using GitHub Pages as a CDN ~ <span class="date">2015-01-21</span></h2>
     <p>I recently began playing with <a href="20141201.html">Cesium</a>, a JavaScript-based open source Earth visualization engine. My use case is the Great North American Eclipse in August of 2017, the first total solar eclipse to track across the continental United States in many decades. Using Cesium as a mapping engine with NASA data of the eclipse track overlaid I can explore wilderness areas all along the hundred-kilometer-wide track that stretches from Washington State to South Carolina, in hopes of finding an ideal camping destination for August 21, 2017.</p>
     <p>Since I couldn't be the only person who wants to camping under the eclipse but doesn't know where it made sense to publish the app online for general use. That led to <a href="http://www.eclipsetracks.org">eclipsetracks.org</a>, a deployment of my functional (but still bare-bones) Cesium application. I deployed it to my Dreamhost VPS which also hosts some of my <a href="http://nuclides.org">other</a> <a href="https://www.familygiftregistry.net">projects</a>.</p>
     <p>This revealed a problem: Cesium has a big footprint. A quick check in the network tab in developer tools shows over 4MB of data, mostly CSS, JS, and JSON, being served from my puny little hosted server. When the app itself (the stuff I developed separate from Cesium) weighs in under 100KB it was clear that I had signed up for a massive overhead on every new visit that will only change to track major updates from Cesium upstream. In other words: I needed a CDN!</p>
@@ -44,23 +58,25 @@
       <div id="nav_posts_next"></div>
     </div>
 
+    <br><br>
+        
+      </div>
+      
+      <div class="two columns">
+        <h5><a href="../">Latest Post</a></h5>
+        <h5><a href="../archives/">Archives</a></h5>
+        <hr>
+        twitter: <a href="https://twitter.com/frencil">@Frencil</a>
+        <br>
+        github: <a href="https://github.com/Frencil">Frencil</a>
+        <br>
+        linkedin: <a href="https://www.linkedin.com/in/frencil">Frencil</a>
+      </div>
+    </div>
   </div>
 
-  <div class="inner_right_column">
-    <h1>&#9732;</h1>
-    <div class="subtitle">&#9883;</div>
-    <hr>
-    <h3><a href="../">Latest Post</a></h3>
-    <h3><a href="../archives/">Archives</a></h3>
-    <hr>
-    twitter: <a href="https://twitter.com/frencil">@Frencil</a>
-    <br>
-    github: <a href="https://github.com/Frencil">Frencil</a>
-  </div>
+  <iframe id="raw_posts" src="../posts.txt" onload="render.loadPosts('nav');" style="display: none;"></iframe>
   
-</div>
-
-<iframe id="raw_posts" src="../posts.txt" onload="render.loadPosts('nav');" style="display: none;"></iframe>
-
 </body>
+
 </html>

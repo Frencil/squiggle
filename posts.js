@@ -40,8 +40,8 @@ render = {
       var limit = Math.min(this.posts.length, 4);
       for (var i = this.posts.length - 2; i > this.posts.length - limit - 2; i--) {
         var post = this.posts[i];
-        document.getElementById("recent_posts").innerHTML += "<h3><tt>" + post.date + ":</tt> "
-                                                          +  "<a href=\"archives/" + post.url + "\">" + post.title + "</a></h3>\n";
+        document.getElementById("recent_posts").innerHTML += "<h4><span class=\"date\">" + post.date + ":</span> "
+                                                          +  "<a href=\"archives/" + post.url + "\">" + post.title + "</a></h4>\n";
       }
     }
   },
@@ -58,8 +58,8 @@ render = {
           current_year = year;
           document.getElementById("archives").innerHTML += "<h2>Archives - " + current_year + "</h2>\n";
         }
-        document.getElementById("archives").innerHTML += "<h3><tt>" + post.date + ":</tt> "
-                                                      +  "<a href=\"" + post.url + "\">" + post.title + "</a></h3>\n";
+        document.getElementById("archives").innerHTML += "<h4><span class=\"date\">" + post.date + ":</span> "
+                                                      +  "<a href=\"" + post.url + "\">" + post.title + "</a></h4>\n";
       }
     }
   },
@@ -67,13 +67,13 @@ render = {
   nav: function() {
     if (this.current_post_idx > 0) {
       var post = this.posts[this.current_post_idx - 1];
-      document.getElementById("nav_posts_prev").innerHTML = "<h3><tt>Previous:</tt> "
-                                                          + "<a href=\"" + post.url + "\">" + post.title + "</a></h3>\n";
+      document.getElementById("nav_posts_prev").innerHTML = "<h4><span class=\"date\">Previous:</span> "
+                                                          + "<a href=\"" + post.url + "\">" + post.title + "</a></h4>\n";
     }
     if (this.current_post_idx < this.posts.length - 1) {
       var post = this.posts[this.current_post_idx + 1];
-      document.getElementById("nav_posts_next").innerHTML = "<h3><tt>Next:</tt> "
-                                                          + "<a href=\"" + post.url + "\">" + post.title + "</a></h3>\n";
+      document.getElementById("nav_posts_next").innerHTML = "<h4><span class=\"date\">Next:</span> "
+                                                          + "<a href=\"" + post.url + "\">" + post.title + "</a></h4>\n";
     }
   },
 

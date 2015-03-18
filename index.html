@@ -1,85 +1,99 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-
-<head>
-  <title>Frencil's Corner</title>
-  <link rel="stylesheet" type="text/css" href="styles.css">
+<html lang="en">
+  <meta charset="utf-8">
+  <title>Frencil's Corner ~ Home</title>
+  <meta name="author" content="Christopher Clark">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/skeleton.css">
+  <link rel="stylesheet" href="css/squiggle.css">
+  <link rel="icon" type="image/png" href="favicon.png">
   <script type="text/javascript" src="posts.js"></script>
 </head>
-
 <body>
 
-<div class="column">
-  
-  <div class="inner_left_column">
+  <div class="container">
+    <div class="row">
+      <div class="ten columns">
+        <h1><a href="">Frencil's Corner</a></h1>
+        <div class="subtitle">Frencil is Christopher Clark, a guy who likes science, math, and programming.</div>
+      </div>
+      <div class="two columns" style="text-align: right;">
+        <h1>&#9732;</h1>
+        <div class="subtitle">&#9883;</div>
+      </div>
+    </div>
+    <div class="row">
+      <hr>
+    </div>
 
-    <h1><a href="">Frencil's Corner</a></h1>
-    <div class="subtitle">Frencil is Christopher Clark, a guy who likes science, math, and programming.</div>
-    <hr>
-
-    <!-- 2015-03-17 -->
-    <a name="2015-03-17"></a>
-    <h2>Accurate Umbral Shadows are Tricky Business <span class="date">2015-03-17</span></h2>
-    <p>Over the past few weeks I've been putting the finishing touches on <a href="http://eclipsetracks.org">EclipseTracks.org</a> (version 1.0). This Friday (March 20th, 2015) there will be <a href="http://eclipse.gsfc.nasa.gov/SEplot/SEplot2001/SE2015Mar20T.GIF">total solar eclipse</a> that cuts through the Norwegian Sea, casting the Faroe Islands and Svalbard in shadow before running across the north pole. Surely Santa will be outside the workshop sporting his eclipse glasses.</p>
-    <figure>
-      <a href="img/eclipsetracks_20150320.jpg"><img src="img/eclipsetracks_20150320.jpg" width="735" height="714"></a>
-      <figcaption><a href="http://eclipsetracks.org">EclipseTracks.org</a> as it appears today <a href="img/eclipsetracks_20150320.jpg">(click for full size)</a></figcaption>
-    </figure>
-    <p>Building EclipseTracks.org has been a tremendous learning experience for a variety of different things. As noted in a disclaimer on the site, though, <b>umbral shadows are approximations only!</b> The umbral shadow is the area where the sun is completely eclipsed by the moon on the surface of the Earth at a given point in time (the penumbral shadow, not currently modeled, is any area where the sun is partially eclipsed). Why?</p>
-    <p>For starters, the Earth is not a perfect sphere. It's an oblate ellipsoid that's fatter around the equator than pole-to-pole and has some pretty large lumps. In 1984 the world geodetic community developed <a href="http://en.wikipedia.org/wiki/World_Geodetic_System#A_new_World_Geodetic_System:_WGS_84">WGS-84</a>, a set of parameters to define an ellipsoid that more closely matches the actual shape of the Earth. This ellipsoid is still the standard in use today by geodetic systems of all scales, including GPS.</p>
-    <p>Considering Earth's imperfect shape, how does one accurately predict where an eclipse shadow will fall? The ray-casting geometry involved is comparatively simple when working with spheres but the nuances of where shadows fall with actual ellipsoids in play make this task pretty difficult. Almost 200 years ago a German mathematician and astronomer named Friedrich Wilhelm Bessel devised a more direct approach. Instead of trying to figure out how the shadow is cast on the ellipsoid surface he created a plane through the ellipsoid perpendicular to a line drawn between the center of the moon and the center of the Earth (the <i>shadow axis</i>). On this plane the shadow is a much more friendly circle, and its movements during an eclipse event can be described with only a few numbers. These numbers are today referred to as <a href="http://en.wikipedia.org/wiki/Besselian_elements">Besselian elements</a>.</p>
-    <figure>
-      <a href="http://en.wikipedia.org/wiki/Besselian_elements#/media/File:BesselianElementsForTotalEclipse3D-en.svg"><img src="img/besselian_elements.jpg" width="400" height="400"></a>
-      <figcaption>The shadow axis and perpendicular plane of an eclipse event described by Besselian elements "<a href="http://commons.wikimedia.org/wiki/File:BesselianElementsForTotalEclipse3D-en.svg#/media/File:BesselianElementsForTotalEclipse3D-en.svg">BesselianElementsForTotalEclipse3D-en</a>" by G. Pieper, enhanced by <a href="//commons.wikimedia.org/wiki/User:Iridos" title="User:Iridos">User:Iridos</a>, Uploader: <a href="//commons.wikimedia.org/wiki/User:Cactus26" title="User:Cactus26">Cactus26</a>) - <span class="int-own-work" lang="en" xml:lang="en">Own work</span>. Licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0" title="Creative Commons Attribution-Share Alike 3.0">CC BY-SA 3.0</a> via <a href="//commons.wikimedia.org/wiki/">Wikimedia Commons</a>.</figcaption>
-    </figure>
-    <p>Once Besselian elements are used to generate the movements of the umbral and penumbral shadows in the plane, along with the accompanying shadow cone, any model of the Earth can be applied. As in the figure above, one could use the current standard WGS-84 model of the Earth and find the intersections of the shadow cone with the surface at arbitrary times during an eclipse event to trace the path and shape of the umbral and penumbral shadows to a very high degree of accuracy.</p>
-    <p>EclipseTracks.org doesn't go this far (yet). Instead the paths for the northern/southern umbral shadow limits and central track of any given eclipse are defined using tables provided by <a href="http://eclipse.gsfc.nasa.gov/SEpath/SEpath2001/SE2015Mar20Tpath.html">NASA</a>. These tables were generated using the method described immediately above with the <a href="http://eclipse.gsfc.nasa.gov/SEbeselm/SEbeselm2001/SE2015Mar20Tbeselm.html">Besselian elements</a> for the eclipse in question.</p>
-    <p>While <a href="https://github.com/Frencil/eclipsescraper">scraping</a> NASA's derived tabular data to draw some polylines in Cesium is relatively <i>way</i> easier than modeling a Besselian shadow cone's intersection with the surface of the WGS-84 ellipsoid I still wanted some approximation of the umbral shadow for a proof of concept. The method EclipseTracks.org uses presently involves defining a shadow ellipse for every defined point in the event (these are usually spaced two minutes apart and defined by a central track point, a northern umbral limit, and southern umbral limit, along with various other details like sun altitude and azimuth). Cesium does a good job of interpolating shapes defined on intervals this way. Here's the general procedure in play right now for approximating the umbral shadow at each point in time:</p>
-    <ol>
-      <li>Position the center of the ellipse on the central track position at time <i>t</i>.</li>
-      <li>Approximate ellipse semi-major axis by taking <a href="http://en.wikipedia.org/wiki/Vincenty%27s_formulae">Vincenty</a> distance (on a WGS-84 ellipsoid) between northern and southern umbral limits at time <i>t</i>.</li>
-      <li>Approximate ellipse semi-minor axis using the sun's altitude at time <i>t</i> in reference to the semi-major axis (near equal when the sun is overhead, smaller when the sun is near the horizon).*</li>
-      <li>Approximate ellipse rotation by averaging the initial and final bearings between the northern and southern umbral limits at time <i>t</i>**.</li>
-    </ol>
-    <p><small>* This is an arbitrary method chosen to make the shadows look &quot;close enough&quot; for the upcoming March 20, 2015 event. It's not even close to correct!</small></p>
-    <p><small>** This bearing is calculated on a spheroid, not a WGS-84 due to conflicts in versions for available Python modules. Also, bearing with respect to polar north typically changes as you move along an ellipsoid/spheroid so an average of initial and final bearing (initial being north-to-south and final being south-to-north, inverted) was the closest approximation available.</small></p>
-    <p>Source code for the above steps can be seen <a href="https://github.com/Frencil/eclipsescraper/blob/master/eclipsescraper/eclipsescraper.py">here</a> (in the <tt>czml()</tt> method).</p>
-    <p>All of these gymnastics, complicated in their own way, get a reasonable approximation for a proof-of-concept of an umbral shadow. Obviously this entire approach is fundamentally flawed as I'm trying to draw a two dimensional shape (an ellipse) onto a three dimensional ellipsoid. Umbral shadows for eclipses can be pretty big&mdash;hundreds of kilometers across&mdash;so the curvature of the Earth is something that can't just be smoothed away.</p>
-    <p>So, lesson learned: accurate umbral shadows are tricky business! At any rate <a href="http://eclipsetracks.org">EclipseTracks.org</a> is live with those &quot;good enough for now&quot; approximations of umbral shadows with much more accurate track polylines. After this Friday's solar eclipse we've got two lined up in 2016: <a href="http://eclipse.gsfc.nasa.gov/SEplot/SEplot2001/SE2016Mar09T.GIF">March 9th</a> that stretches across Indonesia and the South Pacific and <a href="http://eclipse.gsfc.nasa.gov/SEpath/SEpath2001/SE2016Sep01Apath.html">September 1st</a> that stretches across southern Africa and the Indian Ocean.</p>
-    <p>The big one for folks in my corner of the world isn't until <a href="http://www.greatamericaneclipse.com/nation/">August 21st, 2017</a>. That's the one that set off this project in the first place, as I know I'll be camping in some wilderness along that track somewhere but just don't know quite where just yet. Maybe by then I'll have proper shadow rendering with Besselian elements, and then I can use EclipseTracks.org to find the best camping spot in the country.</p>
-    <p>In the meantime I would be very happy for feedback and contributions on the <a href="https://github.com/Frencil/eclipsescraper">eclipsescraper</a> python module, the <a href="https://github.com/Frencil/eclipsetracks">eclipsetracks</a> source code, or <a href="http://eclipsetracks.org">EclipseTracks.org</a> itself!</p>
+    <div class="row">
+      <div class="ten columns">
+        
+        <!-- 2015-03-17 -->
+        <a name="2015-03-17"></a>
+        <h2>Accurate Umbral Shadows are Tricky Business ~ <span class="date">2015-03-17</span></h2>
+        <p>Over the past few weeks I've been putting the finishing touches on <a href="http://eclipsetracks.org">EclipseTracks.org</a> (version 1.0). This Friday (March 20th, 2015) there will be <a href="http://eclipse.gsfc.nasa.gov/SEplot/SEplot2001/SE2015Mar20T.GIF">total solar eclipse</a> that cuts through the Norwegian Sea, casting the Faroe Islands and Svalbard in shadow before running across the north pole. Surely Santa will be outside the workshop sporting his eclipse glasses.</p>
+        <figure>
+          <a href="img/eclipsetracks_20150320.jpg"><img src="img/eclipsetracks_20150320.jpg" width="735" height="714"></a>
+          <figcaption><a href="http://eclipsetracks.org">EclipseTracks.org</a> as it appears today <a href="img/eclipsetracks_20150320.jpg">(click for full size)</a></figcaption>
+        </figure>
+        <p>Building EclipseTracks.org has been a tremendous learning experience for a variety of different things. As noted in a disclaimer on the site, though, <b>umbral shadows are approximations only!</b> The umbral shadow is the area where the sun is completely eclipsed by the moon on the surface of the Earth at a given point in time (the penumbral shadow, not currently modeled, is any area where the sun is partially eclipsed). Why?</p>
+        <p>For starters, the Earth is not a perfect sphere. It's an oblate ellipsoid that's fatter around the equator than pole-to-pole and has some pretty large lumps. In 1984 the world geodetic community developed <a href="http://en.wikipedia.org/wiki/World_Geodetic_System#A_new_World_Geodetic_System:_WGS_84">WGS-84</a>, a set of parameters to define an ellipsoid that more closely matches the actual shape of the Earth. This ellipsoid is still the standard in use today by geodetic systems of all scales, including GPS.</p>
+        <p>Considering Earth's imperfect shape, how does one accurately predict where an eclipse shadow will fall? The ray-casting geometry involved is comparatively simple when working with spheres but the nuances of where shadows fall with actual ellipsoids in play make this task pretty difficult. Almost 200 years ago a German mathematician and astronomer named Friedrich Wilhelm Bessel devised a more direct approach. Instead of trying to figure out how the shadow is cast on the ellipsoid surface he created a plane through the ellipsoid perpendicular to a line drawn between the center of the moon and the center of the Earth (the <i>shadow axis</i>). On this plane the shadow is a much more friendly circle, and its movements during an eclipse event can be described with only a few numbers. These numbers are today referred to as <a href="http://en.wikipedia.org/wiki/Besselian_elements">Besselian elements</a>.</p>
+        <figure>
+          <a href="http://en.wikipedia.org/wiki/Besselian_elements#/media/File:BesselianElementsForTotalEclipse3D-en.svg"><img src="img/besselian_elements.jpg" width="400" height="400"></a>
+          <figcaption>The shadow axis and perpendicular plane of an eclipse event described by Besselian elements "<a href="http://commons.wikimedia.org/wiki/File:BesselianElementsForTotalEclipse3D-en.svg#/media/File:BesselianElementsForTotalEclipse3D-en.svg">BesselianElementsForTotalEclipse3D-en</a>" by G. Pieper, enhanced by <a href="//commons.wikimedia.org/wiki/User:Iridos" title="User:Iridos">User:Iridos</a>, Uploader: <a href="//commons.wikimedia.org/wiki/User:Cactus26" title="User:Cactus26">Cactus26</a>) - <span class="int-own-work" lang="en" xml:lang="en">Own work</span>. Licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0" title="Creative Commons Attribution-Share Alike 3.0">CC BY-SA 3.0</a> via <a href="//commons.wikimedia.org/wiki/">Wikimedia Commons</a>.</figcaption>
+        </figure>
+        <p>Once Besselian elements are used to generate the movements of the umbral and penumbral shadows in the plane, along with the accompanying shadow cone, any model of the Earth can be applied. As in the figure above, one could use the current standard WGS-84 model of the Earth and find the intersections of the shadow cone with the surface at arbitrary times during an eclipse event to trace the path and shape of the umbral and penumbral shadows to a very high degree of accuracy.</p>
+        <p>EclipseTracks.org doesn't go this far (yet). Instead the paths for the northern/southern umbral shadow limits and central track of any given eclipse are defined using tables provided by <a href="http://eclipse.gsfc.nasa.gov/SEpath/SEpath2001/SE2015Mar20Tpath.html">NASA</a>. These tables were generated using the method described immediately above with the <a href="http://eclipse.gsfc.nasa.gov/SEbeselm/SEbeselm2001/SE2015Mar20Tbeselm.html">Besselian elements</a> for the eclipse in question.</p>
+        <p>While <a href="https://github.com/Frencil/eclipsescraper">scraping</a> NASA's derived tabular data to draw some polylines in Cesium is relatively <i>way</i> easier than modeling a Besselian shadow cone's intersection with the surface of the WGS-84 ellipsoid I still wanted some approximation of the umbral shadow for a proof of concept. The method EclipseTracks.org uses presently involves defining a shadow ellipse for every defined point in the event (these are usually spaced two minutes apart and defined by a central track point, a northern umbral limit, and southern umbral limit, along with various other details like sun altitude and azimuth). Cesium does a good job of interpolating shapes defined on intervals this way. Here's the general procedure in play right now for approximating the umbral shadow at each point in time:</p>
+        <ol>
+          <li>Position the center of the ellipse on the central track position at time <i>t</i>.</li>
+          <li>Approximate ellipse semi-major axis by taking <a href="http://en.wikipedia.org/wiki/Vincenty%27s_formulae">Vincenty</a> distance (on a WGS-84 ellipsoid) between northern and southern umbral limits at time <i>t</i>.</li>
+          <li>Approximate ellipse semi-minor axis using the sun's altitude at time <i>t</i> in reference to the semi-major axis (near equal when the sun is overhead, smaller when the sun is near the horizon).*</li>
+          <li>Approximate ellipse rotation by averaging the initial and final bearings between the northern and southern umbral limits at time <i>t</i>**.</li>
+        </ol>
+        <p><small>* This is an arbitrary method chosen to make the shadows look &quot;close enough&quot; for the upcoming March 20, 2015 event. It's not even close to correct!</small></p>
+        <p><small>** This bearing is calculated on a spheroid, not a WGS-84 due to conflicts in versions for available Python modules. Also, bearing with respect to polar north typically changes as you move along an ellipsoid/spheroid so an average of initial and final bearing (initial being north-to-south and final being south-to-north, inverted) was the closest approximation available.</small></p>
+        <p>Source code for the above steps can be seen <a href="https://github.com/Frencil/eclipsescraper/blob/master/eclipsescraper/eclipsescraper.py">here</a> (in the <tt>czml()</tt> method).</p>
+        <p>All of these gymnastics, complicated in their own way, get a reasonable approximation for a proof-of-concept of an umbral shadow. Obviously this entire approach is fundamentally flawed as I'm trying to draw a two dimensional shape (an ellipse) onto a three dimensional ellipsoid. Umbral shadows for eclipses can be pretty big&mdash;hundreds of kilometers across&mdash;so the curvature of the Earth is something that can't just be smoothed away.</p>
+        <p>So, lesson learned: accurate umbral shadows are tricky business! At any rate <a href="http://eclipsetracks.org">EclipseTracks.org</a> is live with those &quot;good enough for now&quot; approximations of umbral shadows with much more accurate track polylines. After this Friday's solar eclipse we've got two lined up in 2016: <a href="http://eclipse.gsfc.nasa.gov/SEplot/SEplot2001/SE2016Mar09T.GIF">March 9th</a> that stretches across Indonesia and the South Pacific and <a href="http://eclipse.gsfc.nasa.gov/SEpath/SEpath2001/SE2016Sep01Apath.html">September 1st</a> that stretches across southern Africa and the Indian Ocean.</p>
+        <p>The big one for folks in my corner of the world isn't until <a href="http://www.greatamericaneclipse.com/nation/">August 21st, 2017</a>. That's the one that set off this project in the first place, as I know I'll be camping in some wilderness along that track somewhere but just don't know quite where just yet. Maybe by then I'll have proper shadow rendering with Besselian elements, and then I can use EclipseTracks.org to find the best camping spot in the country.</p>
+        <p>In the meantime I would be very happy for feedback and contributions on the <a href="https://github.com/Frencil/eclipsescraper">eclipsescraper</a> python module, the <a href="https://github.com/Frencil/eclipsetracks">eclipsetracks</a> source code, or <a href="http://eclipsetracks.org">EclipseTracks.org</a> itself!</p>
     
-    <div class="subtitle">
-      --<br>
-      <br>
-      Christopher Clark<br>
-      2015-03-17
+        <div class="subtitle">
+          --<br>
+          <br>
+          Christopher Clark<br>
+          2015-03-17
+        </div>
+
+        <br><hr><br>
+    
+        <h3>Recent Posts</h3>
+        <div id="recent_posts"></div>
+
+        <br><br>
+        
+      </div>
+      
+      <div class="two columns">
+        <h5><a href="">Latest Post</a></h5>
+        <h5><a href="archives/">Archives</a></h5>
+        <hr>
+        twitter: <a href="https://twitter.com/frencil">@Frencil</a>
+        <br>
+        github: <a href="https://github.com/Frencil">Frencil</a>
+        <br>
+        linkedin: <a href="https://www.linkedin.com/in/frencil">Frencil</a>
+      </div>
     </div>
-
-    <br><hr><br>
-
-    <h2>Recent Posts</h2>
-
-    <div id="recent_posts">
-    </div>
-
   </div>
 
-  <div class="inner_right_column">
-    <h1>&#9732;</h1>
-    <div class="subtitle">&#9883;</div>
-    <hr>
-    <h3><a href="">Latest Post</a></h3>
-    <h3><a href="archives/">Archives</a></h3>
-    <hr>
-    twitter: <a href="https://twitter.com/frencil">@Frencil</a>
-    <br>
-    github: <a href="https://github.com/Frencil">Frencil</a>
-  </div>
+  <iframe id="raw_posts" src="posts.txt" onload="render.loadPosts('recent');" style="display: none;"></iframe>
   
-</div>
-
-<iframe id="raw_posts" src="posts.txt" onload="render.loadPosts('recent');" style="display: none;"></iframe>
-
 </body>
+
 </html>

@@ -1,25 +1,39 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-
-<head>
-  <title>Frencil's Corner</title>
-  <link rel="stylesheet" type="text/css" href="../styles.css">
+<html lang="en">
+  <meta charset="utf-8">
+  <title>Frencil's Corner ~ Getting Back Into D3 ~ 2014-11-09</title>
+  <meta name="author" content="Christopher Clark">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/skeleton.css">
+  <link rel="stylesheet" href="css/squiggle.css">
+  <link rel="icon" type="image/png" href="../favicon.png">
   <script type="text/javascript" src="../posts.js"></script>
 </head>
-
 <body>
 
-<div class="column">
-  
-  <div class="inner_left_column">
+  <div class="container">
+    <div class="row">
+      <div class="ten columns">
+        <h1><a href="../">Frencil's Corner</a></h1>
+        <div class="subtitle">Frencil is Christopher Clark, a guy who likes science, math, and programming.</div>
+      </div>
+      <div class="two columns" style="text-align: right;">
+        <h1>&#9732;</h1>
+        <div class="subtitle">&#9883;</div>
+      </div>
+    </div>
+    <div class="row">
+      <hr>
+    </div>
 
-    <h1><a href="../">Frencil's Corner</a></h1>
-    <div class="subtitle">Frencil is Christopher Clark, a guy who likes science, math, and programming.</div>
-    <hr>
+    <div class="row">
+      <div class="ten columns">
 
     <!-- 2014-11-09 -->
     <a name="2014-11-09"></a>
-    <h2>Getting back into D3 <span class="date">2014-11-09</span></h2>
+    <h2>Getting Back Into D3 ~ <span class="date">2014-11-09</span></h2>
     <p>I spent most of the weekend dusting off an <a href="https://github.com/Frencil/galaxy_of_nuclides">old project</a>. The point of the project is mainly to play around with all the neat data surrounding elements and their nuclides. Maybe it'll also be a useful tool for teaching folks a bit more about atomic physics, too.</p>
     <p>A big part of the project was just <i>getting</i> the data in the first place, which I was able to get from the Brookhaven National Laboratory, but it needed a bit of massaging. Ultimately I created two CSV files: <a href="https://github.com/Frencil/galaxy_of_nuclides/blob/master/data/elements.csv">one for all elements on the periodic table of elements</a> and <a href="https://github.com/Frencil/galaxy_of_nuclides/blob/master/data/nuclides.csv">one for all nuclides on the chart of nuclides</a>.</p>
     <p>When I set out to port the two year old project from its original language of Processing to the web it was obvious that it needed to be built natively in JavaScript (yeah, I tried Processing.js but I was using some Java datatypes that Processing.js didn't support and the whole thing was a crutch anyway). Unsurprisingly I found a lot of different JavaScript libraries out there for doing interactive graphics, but it wasn't clear which one to use. I had something going for a while with <a href="http://www.createjs.com/#!/CreateJS">Create.js</a> but found I still needed a lot of helper libraries too, like jQuery and its associated CSV parsing lib. The project felt bloated before I even had any data parsed. It stalled and went back on the shelf.</p>
@@ -79,23 +93,25 @@
       <div id="nav_posts_next"></div>
     </div>
 
+    <br><br>
+        
+      </div>
+      
+      <div class="two columns">
+        <h5><a href="../">Latest Post</a></h5>
+        <h5><a href="../archives/">Archives</a></h5>
+        <hr>
+        twitter: <a href="https://twitter.com/frencil">@Frencil</a>
+        <br>
+        github: <a href="https://github.com/Frencil">Frencil</a>
+        <br>
+        linkedin: <a href="https://www.linkedin.com/in/frencil">Frencil</a>
+      </div>
+    </div>
   </div>
+
+  <iframe id="raw_posts" src="../posts.txt" onload="render.loadPosts('nav');" style="display: none;"></iframe>
   
-  <div class="inner_right_column">
-    <h1>&#9732;</h1>
-    <div class="subtitle">&#9883;</div>
-    <hr>
-    <h3><a href="../">Latest Post</a></h3>
-    <h3><a href="../archives/">Archives</a></h3>
-    <hr>
-    twitter: <a href="https://twitter.com/frencil">@Frencil</a>
-    <br>
-    github: <a href="https://github.com/Frencil">Frencil</a>
-  </div>
-
-</div>
-
-<iframe id="raw_posts" src="../posts.txt" onload="render.loadPosts('nav');" style="display: none;"></iframe>
-
 </body>
+
 </html>
