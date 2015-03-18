@@ -19,7 +19,7 @@
         <h1><a href="../">Frencil's Corner</a></h1>
         <div class="subtitle">Frencil is Christopher Clark, a guy who likes science, math, and programming.</div>
       </div>
-      <div class="two columns" style="text-align: right;">
+      <div class="two columns unicodes">
         <h1>&#9732;</h1>
         <div class="subtitle">&#9883;</div>
       </div>
@@ -36,14 +36,14 @@
     <h2>Accurate Umbral Shadows are Tricky Business ~ <span class="date">2015-03-17</span></h2>
     <p>Over the past few weeks I've been putting the finishing touches on <a href="http://eclipsetracks.org">EclipseTracks.org</a> (version 1.0). This Friday (March 20th, 2015) there will be <a href="http://eclipse.gsfc.nasa.gov/SEplot/SEplot2001/SE2015Mar20T.GIF">total solar eclipse</a> that cuts through the Norwegian Sea, casting the Faroe Islands and Svalbard in shadow before running across the north pole. Surely Santa will be outside the workshop sporting his eclipse glasses.</p>
     <figure>
-      <a href="img/eclipsetracks_20150320.jpg"><img src="img/eclipsetracks_20150320.jpg" width="735" height="714"></a>
+      <a href="img/eclipsetracks_20150320.jpg"><img src="img/eclipsetracks_20150320.jpg"></a>
       <figcaption><a href="http://eclipsetracks.org">EclipseTracks.org</a> as it appears today <a href="img/eclipsetracks_20150320.jpg">(click for full size)</a></figcaption>
     </figure>
     <p>Building EclipseTracks.org has been a tremendous learning experience for a variety of different things. As noted in a disclaimer on the site, though, <b>umbral shadows are approximations only!</b> The umbral shadow is the area where the sun is completely eclipsed by the moon on the surface of the Earth at a given point in time (the penumbral shadow, not currently modeled, is any area where the sun is partially eclipsed). Why?</p>
     <p>For starters, the Earth is not a perfect sphere. It's an oblate ellipsoid that's fatter around the equator than pole-to-pole and has some pretty large lumps. In 1984 the world geodetic community developed <a href="http://en.wikipedia.org/wiki/World_Geodetic_System#A_new_World_Geodetic_System:_WGS_84">WGS-84</a>, a set of parameters to define an ellipsoid that more closely matches the actual shape of the Earth. This ellipsoid is still the standard in use today by geodetic systems of all scales, including GPS.</p>
     <p>Considering Earth's imperfect shape, how does one accurately predict where an eclipse shadow will fall? The ray-casting geometry involved is comparatively simple when working with spheres but the nuances of where shadows fall with actual ellipsoids in play make this task pretty difficult. Almost 200 years ago a German mathematician and astronomer named Friedrich Wilhelm Bessel devised a more direct approach. Instead of trying to figure out how the shadow is cast on the ellipsoid surface he created a plane through the ellipsoid perpendicular to a line drawn between the center of the moon and the center of the Earth (the <i>shadow axis</i>). On this plane the shadow is a much more friendly circle, and its movements during an eclipse event can be described with only a few numbers. These numbers are today referred to as <a href="http://en.wikipedia.org/wiki/Besselian_elements">Besselian elements</a>.</p>
     <figure>
-      <a href="http://en.wikipedia.org/wiki/Besselian_elements#/media/File:BesselianElementsForTotalEclipse3D-en.svg"><img src="img/besselian_elements.jpg" width="400" height="400"></a>
+      <a href="http://en.wikipedia.org/wiki/Besselian_elements#/media/File:BesselianElementsForTotalEclipse3D-en.svg"><img src="img/besselian_elements.jpg"></a>
       <figcaption>The shadow axis and perpendicular plane of an eclipse event described by Besselian elements "<a href="http://commons.wikimedia.org/wiki/File:BesselianElementsForTotalEclipse3D-en.svg#/media/File:BesselianElementsForTotalEclipse3D-en.svg">BesselianElementsForTotalEclipse3D-en</a>" by G. Pieper, enhanced by <a href="//commons.wikimedia.org/wiki/User:Iridos" title="User:Iridos">User:Iridos</a>, Uploader: <a href="//commons.wikimedia.org/wiki/User:Cactus26" title="User:Cactus26">Cactus26</a>) - <span class="int-own-work" lang="en" xml:lang="en">Own work</span>. Licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0" title="Creative Commons Attribution-Share Alike 3.0">CC BY-SA 3.0</a> via <a href="//commons.wikimedia.org/wiki/">Wikimedia Commons</a>.</figcaption>
     </figure>
     <p>Once Besselian elements are used to generate the movements of the umbral and penumbral shadows in the plane, along with the accompanying shadow cone, any model of the Earth can be applied. As in the figure above, one could use the current standard WGS-84 model of the Earth and find the intersections of the shadow cone with the surface at arbitrary times during an eclipse event to trace the path and shape of the umbral and penumbral shadows to a very high degree of accuracy.</p>
@@ -80,7 +80,7 @@
         
       </div>
       
-      <div class="two columns">
+      <div class="two columns sidelinks">
         <h5><a href="../">Latest Post</a></h5>
         <h5><a href="../archives/">Archives</a></h5>
         <hr>

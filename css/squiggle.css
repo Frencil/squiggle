@@ -80,3 +80,21 @@ blockquote {
   font-family: "Times New Roman", Georgia, Serif;
   font-style: italic;
 }
+
+img {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.unicodes { 
+  text-align: right;
+}
+@media (max-width: 550px) {
+  .unicodes { 
+    display: none;
+  }
+}
+
+.sidelinks { 
+  padding-bottom: 40px;
+}
