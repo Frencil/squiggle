@@ -10,7 +10,7 @@ def respliceHeaderFooter(filename, title='', depth='', loadposts=''):
 
     global header
     use_header = header
-    for i, j in ('{$TITLE}', title), ('{$DEPTH}', depth):
+    for i, j in ('{$DEPTH}', depth), ('{$TITLE}', title):
         use_header = use_header.replace(i, j)
 
     global footer
