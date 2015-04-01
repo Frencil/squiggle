@@ -1,4 +1,6 @@
-render = {
+"use strict";
+
+var render = {
 
   posts: new Array(),
   current_post_idx: -1,
