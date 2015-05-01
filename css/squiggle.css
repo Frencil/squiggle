@@ -48,15 +48,13 @@ p ul li {
 }
 
 a {
+  text-decoration: none;
   color: rgb(71, 140, 158);
 }
 
 a:hover {
   color: rgb(15, 152, 189);
-}
-
-.inner_right_column a {
-  text-decoration: none;
+  text-decoration: underline;
 }
 
 .date {
@@ -188,12 +186,4 @@ div.resume p, div.resume ul {
 
 div.resume section { 
   margin-bottom: 3rem;
-}
-
-div.resume a { 
-  text-decoration: none;
-}
-
-div.resume a:hover { 
-  text-decoration: underline;
 }
