@@ -32,14 +32,19 @@ h1 a, h2 a, h3 a, h4 a, h5 a {
 }
 
 .subtitle {
-  color: rgba(107, 113, 115, 0.8);
+  color: rgb(113, 119, 121);
   font-style: italic;
   font-weight:bold;
   font-size: 80%;
 }
 
+li { 
+  margin-left: 3rem;
+  list-style-position: outside;
+}
+
 p ul li {
-  color: rgba(107, 113, 115, 0.8);
+  color: rgb(113, 119, 121);
 }
 
 a {
@@ -133,4 +138,62 @@ div.copyright {
   font-style: italic;
   font-size: 80%;
   margin-bottom: 8px;
+}
+
+div.resume h1 { 
+  font-weight: bold;
+  font-variant: small-caps;
+  font-size: 6rem;
+  color: rgb(46, 90, 102);
+}
+
+div.resume h2 { 
+  font-variant: small-caps;
+  font-weight: bold;
+  font-size: 3rem;
+  color: rgb(46, 90, 102);
+}
+
+div.resume h3 { 
+  font-weight: bold;
+  font-size: 2rem;
+  color: rgb(46, 90, 102);
+  margin-bottom: 1rem;
+}
+
+div.resume h3 span.sub { 
+  font-weight: normal;
+  font-style: italic;
+  color: rgba(107, 113, 115, 0.8);
+}
+
+div.resume h4 { 
+  font-weight: bold;
+  font-size: 1.6rem;
+  margin-bottom: 1rem;
+}
+
+div.resume h4 span.sub { 
+  font-weight: normal;
+}
+
+div.resume span.dot { 
+   padding-left: 1rem;
+   padding-right: 1rem;
+}
+
+div.resume p, div.resume ul { 
+  margin-bottom: 0.5rem;
+}
+
+div.resume section { 
+  margin-bottom: 3rem;
+}
+
+div.resume a { 
+  text-decoration: none;
+}
+
+div.resume a:hover { 
+  text-decoration: underline;
 }
