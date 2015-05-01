@@ -170,6 +170,24 @@ Orbit.prototype.stroke = function(value){
     }
 };
 
+Orbit.prototype.stroke_width = function(value){
+    if (typeof value == "undefined"){
+        return this.properties.stroke_width;
+    } else {
+        this.properties.stroke_width = parseFloat(value);
+        return this;
+    }
+};
+
+Orbit.prototype.stroke_dasharray = function(value){
+    if (typeof value == "undefined"){
+        return this.properties.stroke_dasharray;
+    } else {
+        this.properties.stroke_dasharray = value.toString();
+        return this;
+    }
+};
+
 // Tension is a float between 0 and 1
 Orbit.prototype.tension = function(value){
     if (typeof value == "undefined"){
