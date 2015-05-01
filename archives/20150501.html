@@ -35,7 +35,6 @@
     <div class="row">
       <div class="nine columns">
 <!-- END HEADER -->
-
     <!-- 2015-05-01 -->
     <a name="2015-05-01"></a>
     <h2>Animated Orbiting Particles in d3 ~ <span class="date">2015-05-01</span></h2>
@@ -44,7 +43,7 @@
       <svg width="300" height="250" id="helium4"></svg>
       <figcaption>A spritely Helium-4 atom. Not drawn to scale.</figcaption>
     </figure>
-    <p>A basic atom diagram like this is more engaging and flexible than a static graphic. But suppose I wanted to digram any combination of these particles, such as other types of atoms altogether. Since it only takes three particles to make an atom (protons, neutrons, and electrons) this is a good use case for some object-oriented javascript.</p>
+    <p>A basic atom diagram like this is more engaging and flexible than a static graphic. But suppose I wanted to digram any combination of these particles, like other types of atoms. Since it only takes three particles to make an atom (protons, neutrons, and electrons) this is a good use case for some object-oriented javascript.</p>
     <h5>Abstracting Particles</h5>
     <p>Let's start with declaring a Particle class.</p>
     <pre><code class="javascript">var Particle = function(){
@@ -71,7 +70,7 @@
         }
     };
 };</code></pre>
-    <p>Our <code>Particle</code> class has three top-level attributes: <code>node</code>, <code>properties</code>, and <code>types</code>. We'll get to the node and types in a minute, but first, why put object attributes like id and position inside another object instead of as top-level attributes? While it will make internal references to those properties slightly more verbose it allows us to emulate the d3 API's approach of both setting <i>and</i> getting any property with just a single method. Here's an example for setting and getting <code>id</code>:</p>
+    <p>Our <code>Particle</code> class has three top-level attributes: <code>node</code>, <code>properties</code>, and <code>types</code>. We'll get to node and types in a minute, but first, why put object attributes like id and position inside another object instead of as top-level attributes? While it will make internal references to those properties slightly more verbose it allows us to emulate the d3 API's approach of both setting <i>and</i> getting any property with just a single method. Here's an example for setting and getting <code>id</code>:</p>
     <pre><code class="javascript">Particle.prototype.id = function(value){
     if (typeof value == "undefined"){
         return this.properties.id;
@@ -80,8 +79,8 @@
         return this;
     }
 };</code></pre>
-    <p>If no argument is passed to the method&emdash;as in <code>Particle.id()</code>&emdash;the Particle is unchanged and the value of the Particle's <code>id</code> property is returned. If an argument is passed, however&emdash;as in <code>Particle.id("foo")</code>&emdash;the Particle's <code>id</code> attribute is set to the value. Also worth noting is the return value: <code>this</code>. This is the simple approach that allows chaining methods, also emulated from the d3 API and countless other javascript frameworks. It allows creating a Particle to be done flexibly in a single command, like this:</p>
-    <pre><code class="javascript">var p = new Particle().id("foo");</code></pre>
+    <p>If no argument is passed to a method&mdash;e.g. <code>Particle.id()</code>&mdash;the Particle is unchanged and in this example the value of the Particle's <code>id</code> property is returned. If an argument is passed, however&mdash;e.g. <code>Particle.id("foo")</code>&mdash;the Particle's <code>id</code> attribute is set to the value. Also worth noting is the return value: <code>this</code>. This is the simple approach that allows chaining methods, also emulated from the d3 API and countless other javascript frameworks. It allows creating a Particle to be done flexibly in a single command, like this:</p>
+    <pre><code class="javascript">var p = new Particle().id("foo").x(10).y(20);</code></pre>
     <p>The full Particle class declaration is at the bottom of this blog post, so we'll skip the rest of the property getter/setter methods for now. Suffice it to say that every value in the <code>properties</code> object should have a corresponding getter/setter function, each with it's own input validation.</p>
     <h5>Particle Types and Rendering</h5>
     <p>Let's take a closer look at the three basic types defined in the Particle class's declaration:</p>
@@ -100,9 +99,10 @@
     }
 };</code></pre>
     <p>Each type describes the basic appearance of a certain particle. For simplicity's sake all particles are essentially a circle and a piece of text. Since these would be literally appended to a parent SVG as <code>&lt;circle&gt;</code> and <code>&lt;text&gt;</code> objects we can define each of these with the attributes they'll need. Thus, the proton has a circle with <code>r</code> (radius) of 1 and <code>stroke_width</code> of 0.1.</p>
-    <p>There are a lot of magic numbers here, but there's a pattern. Consider the relative radii of each type's circle. Proton, at radius <b>1</b>, is our unit particle. Electrons are <i>way</i> smaller than protons (about 1/2000th the size), but that scale is a bit ridiculous for medium-sized diagrams, so let's just crank the electron down by an order of magnitude to <b>0.1</b>. Now neutrons are actually a shade smaller than protons, and a good approximation is that a proton minus an electron is a neutron (hey, that's how <a href="http://en.wikipedia.org/wiki/Beta_decay">beta decay</a> works!), so let's do set the neutron radius to that difference of <b>0.9</b>. All the other magic numbers sort of fall out from what looks "good" given those initial particle sizes. Especially when sizing and positioning text; SVG text can vary across browsers and the line-height-to-letter-height ratio varies depending on glyphs and fonts. When designing text in an SVG it's just going to get messy.</p>
-    <p>At this point I had to select which attributes would be baked into the javascript declarations (possibly making them configurable with each Particle definition) or bake them into the CSS as classes. In general, since classes generally render the fastest and are not defined inside logic, I favor using CSS as the default location for all attributes and pull only the ones I know I'll want to change on a per-particle basis into the javascript. But since flexibility is awesome and infelxibility sucks the CSS ended up with mostly just colors.</p>
-    <pre><code class="css">text.particle { 
+    <p>There are a lot of magic numbers here, but there's a pattern. Consider the relative radii of each type's circle. Proton, at radius <b>1</b>, is our unit particle. Electrons are <i>way</i> smaller than protons (about 1/2,000th the size), but that scale is a bit ridiculous for medium-sized diagrams, so let's just crank the electron down by an order of magnitude to <b>0.1</b>. Now neutrons are actually a shade smaller than protons, and a good approximation is that a proton minus an electron is a neutron (hey, that's how <a href="http://en.wikipedia.org/wiki/Beta_decay">beta decay</a> works!), so let's do set the neutron radius to that difference of <b>0.9</b>. All the other magic numbers sort of fall out from what looks "good" given those initial particle sizes. Especially when sizing and positioning text; SVG text can vary across browsers and the line-height-to-letter-height ratio varies depending on glyphs and fonts. When designing text in SVG one can mitigate sloppiness but never eliminate it.</p>
+    <p>At this point I had to select which attributes would be baked into the javascript declarations (possibly making them configurable with each Particle definition) or bake them into the CSS as classes. In general, since <a href="http://jsperf.com/style-element-vs-attr">classes render faster than styles</a> and are not defined inside logic, I favor using CSS as the default location for all attributes and pull only the ones I know I'll want to change on a per-particle basis into javascript. But since flexibility is awesome and inflexibility sucks the CSS ended up with mostly just colors.</p>
+    <pre><code class="css">text.particle {
+    font-family: Helvetica, Arial, sans-serif;
     fill: rgb(15,15,15);
 }
 circle.particle.proton {
@@ -117,9 +117,9 @@ circle.particle.electron {
     fill: rgb(170,227,255);
     stroke: rgb(102,136,153);
 }</code></pre>
-    <p>Now to render a particle we can once again borrow from d3 to help quide the syntax we <i>want</i> and then make that syntax work. This is essentially test-driven development in a nutshell. Since I don't want to crawl inside the guts of d3 but I will be busy chaining methods to define a Particle, I could do something like this:</p>
+    <p>Now to render a defined particle we can once again borrow from d3. Let's imagine the syntax we <i>want</i> and then make that syntax work (this is essentially test-driven development in a nutshell). Since I don't want to crawl inside the guts of d3 but I will be busy chaining methods to define a Particle, I could do something like this:</p>
     <pre><code class="javascript">var p = new Particle().id("foo").appendTo(d3.select("svg"));</code></pre>
-    <p>What we're essentially doing is finishing the method chain with a special function to actually do the rendering. Also, since d3 selectors are objects that can be passed around easily, taking a selector as the only argument tells us <i>where</i> to do the rendering. This is powerful and important because in SVG layers and nesting are absolute determinants to the appearance of the final product, so this class will only be robust if we can add particles as children of any object in the SVG. Here's a simplification of how <code>Particle.appendTo()</code> works:</p>
+    <p>What we're essentially doing is finishing the method chain with a special function to actually append the particle group to the SVG. Also, since d3 selectors are objects that can be passed around easily, taking a selector as the only argument tells us <i>where</i> to do the rendering. This is powerful and important because in SVG layers and nesting are absolute determinants to the appearance of the final product, so our class will be far more robust if we can add particles as children of any object in the SVG. Here's a simplification of how <code>Particle.appendTo()</code> works:</p>
     <pre><code class="javascript">Particle.prototype.appendTo = function(selector){
     var particle = this.types[this.properties.type];
     // Sanity check - make sure particle type is valid
@@ -142,11 +142,11 @@ circle.particle.electron {
     }
     return this;
 };</code></pre>
-    <p>There's a lot going on here. First of all we do a simple sanity check on the particle type. Once cleared we append a new group node to the parent selector and store it in the Particle's <code>node</code> property. The group node takes on the ID defined in the Particle's properties as well as the x and y position by way of the <code>transform</code> attribute. We can translate, scale, and rotate arbitrarily intricate particles to our heart's content this way, so long as we apply our transformations to the parent group. We can also get a d3 selector for that group node quickly via the <code>node</code> property, and this will become quite useful when we get into orbits.</p>
-    <p>Once the parent group is defined we loop through the defined SVG objects for the particle type (e.g. the <code>circle</code> and <code>text</code> objects). Each object kicks off another loop to set its attributes, like the radius on the circle or the line-height on the text. Note that in this simplified version the setting of attributes was collapsed to a single line... oh if only it was that easy! As you can see in the complete class definition at the bottom of this post that block of logic is actually an ugly switch statement. For this we can thank minor inconsistencies between the three languages in play (javascript, HTML, and CSS) and leave it at that.</p>
+    <p>There's a lot going on here. First of all we do a simple sanity check on the particle type. Once cleared we append a new group node to the parent selector and store it in the Particle's <code>node</code> property. The group node takes on the ID defined in the Particle's properties as well as the x and y position by way of the <code>transform</code> attribute. We can translate, scale, and rotate arbitrarily intricate particles to our heart's content this way, so long as we apply our transformations to the parent group. We can also get a d3 selector for that group node quickly via the <code>node</code> property, and this will become useful when we get into orbits.</p>
+    <p>Once the parent group is defined we loop through the defined SVG objects for the particle type (e.g. the <code>circle</code> and <code>text</code> objects). Each object kicks off another loop to set its attributes, like the radius on the circle or the line-height on the text. Note that in this simplified version the setting of attributes was collapsed to a single line... oh if only it was that easy! As you can see in the complete class definition at the bottom of this post that block of logic is actually a much less attractive switch statement. For this we can thank minor inconsistencies between the three languages in play (such as the mix of "attribute" and "style" or the use of hyphens in CSS) and leave it at that.</p>
     <h5>Let's Orbit!</h5>
-    <p>Okay, so particles are neat but once defined they just site there without further animation. Particles orbit other particles and particles go flying around in straight lines until they hit something. Either way such particles could be animated in d3 by following a <code>&lt;path&gt;</code>.</p>
-    <p>For simplicity sake, and because it's just a cool word, let's call all such paths orbits. An orbit can be defined much like a particle, to start:</p>
+    <p>Okay, so particles are neat but once defined they just sit there without further animation. Ideally Particles should be able to orbit other particles or be sent along any arbitrary path.</p>
+    <p>For simplicity sake, let's call all such paths orbits. An orbit can be defined much like a particle, to start:</p>
     <pre><code class="javascript">var Orbit = function(){
     this.node = null;
     this.properties = {
@@ -163,7 +163,7 @@ circle.particle.electron {
         animateFunction: null
     };
 };</code></pre>
-    <p>This declaration is nothing more than a list of default properties. The scalars among these (everything but <code>scaleFunction</code> and <code>animateFunction</code>) can and should all have unified getter/setter methods just like in the Particle class. Let's skip ahead to the <code>appendTo()</code> method, done in the same style as the Particle class:</p>
+    <p>This declaration is nothing more than a list of default properties. The scalars among these (everything but <code>scaleFunction</code> and <code>animateFunction</code>) can and should each have a unified getter/setter method just like in the Particle class. Let's skip ahead to the <code>appendTo()</code> method to render orbits to the SVG:</p>
     <pre><code class="javascript">Orbit.prototype.appendTo = function(selector){
     this.node = selector.append("path")
         .attr("id", this.properties.id)
@@ -176,8 +176,8 @@ circle.particle.electron {
         .attr("d", d3.svg.line().tension(this.properties.tension).interpolate(this.properties.interpolate));
     return this;
 };</code></pre>
-    <p>This is simpler than the Particle's <code>appendTo()</code> method because we haven't differentiated orbit types and there's no dynamic creation of SVG objects outside the path itself. There doesn't need to be. Just as with Particle we're storing the appended node in the Orbit's <code>node</code> attribute, but there's no parent group here, just a single <code>&lt;path&gt;</code> node.</p>
-    <p>In the last two lines of the path node's creation, though, some less trivial d3 code pops up. First is the call to the <code>data()</code> method, which takes our path property wrapped in an array. What's going on here? For a comprehensive and high-level overview, see the d3 documention on <a href="http://bost.ocks.org/mike/selection/#data">How Selections Work # Bound to Data</a>. But to simplify it consider this: we want a path along which we can animate a particle, so we'll need to interpolate between points on that path. In order to interpolate d3 needs to parse the path's points as data, so we feed it in through the <code>data()</code> method instead of defining the path as an attribute (which wouldn't completely fail; the path would just be a static object like a <code>&lt;circle&gt;</code> or a <code>&lt;rect&gt;</code>).</p>
+    <p>This appears simpler than the Particle's <code>appendTo()</code> method because we haven't differentiated orbit types and there's no dynamic creation of SVG objects in addition to the path itself. Just as with Particle we're storing the appended node in the Orbit's <code>node</code> attribute, but there's no parent group here, just a single <code>&lt;path&gt;</code> node.</p>
+    <p>In the last two lines of the path node's creation, though, some less trivial d3 code pops up. First is the call to the <code>data()</code> method, which takes our path property wrapped in an array. For a comprehensive and high-level overview on what that core d3 method does, see the d3 documention on <a href="http://bost.ocks.org/mike/selection/#data">How Selections Work # Bound to Data</a>. But to simplify it consider this: we want a path along which we can animate a particle, so we'll need to interpolate between points on that path. In order to interpolate d3 needs to parse the path's points as data, so we feed it in through the <code>data()</code> method instead of defining the path's points as an attribute (which would be valid SVG but we couldn't interact with it).</p>
     <p>The final line where we set the <code>d</code> attribute defines our interpolation. The tension value (a float bewteen 0 and 1) and the interpolate value (a string) are what change the interpolated path along which our particle will travel from the initial as-the-crow-flies progession (straight lines between each point with a constant speed) to, well, practically anything we want. Just look at some of the weird stuff you can do!</p>
     <div class="row">
         <div class="four columns">
@@ -225,7 +225,7 @@ var i3o = new Orbit().id("i3o").duration(4000)
     .appendTo(i3);
 var i3p = new Particle().type("neutron").id("i3p").scale(1).appendTo(i3);
 i3o.attachParticle(i3p.node);</code></pre>
-    <p>All of the above examples have the same paths and particles and only vary the tension and line interpolation. <a href="https://github.com/mbostock/d3/wiki/SVG-Shapes#line_interpolate">A full list of d3 line interpolations can be found here</a> and they take some experimentation to really understand. This might also make clear why the defaults baked into the Orbit class's declaration are just so: tenion of <b>0.5</b> and interpolation of <b>cardinal-closed</b> will generate smooth loops with just a few points (specifically only four points are needed for any circular or elliptical orbit). Note that tension and interpolation will only change the way the <code>&lt;path&gt;</code> node intersects with the points we define.</p>
+    <p>All of the above examples have the same paths and particles and only vary the tension and line interpolation. <a href="https://github.com/mbostock/d3/wiki/SVG-Shapes#line_interpolate">A full list of d3 line interpolations can be found here</a> and they take some experimentation to really understand. This might also make clear why the defaults baked into the Orbit class's declaration are just so: tenion of <b>0.5</b> and interpolation of <b>cardinal-closed</b> will generate smooth loops with just a few points (only four points are needed for any circular or elliptical orbit). Note that tension and interpolation will only change the way the <code>&lt;path&gt;</code> node intersects with the points we define.</p>
     <h5>Attaching Particles to Orbits and Making Them Go</h5>
     <p>We can now define a particle and an orbit but we have yet to put the former on the latter to make it dance. To pull this off we borrow heavily from <a href="http://bl.ocks.org/mbostock/1705868">this d3 Point-Along-Path Interpolation</a>. But let's not dive under the hood just yet... let's take a closer look at syntax like that which generated the first interpolation example above:</p>
     <pre><code class="javascript">var g = d3.select("svg").append("g");
@@ -235,7 +235,7 @@ var o = new Orbit().duration(4000)
     .appendTo(g);
 var p = new Particle().type("neutron").appendTo(g);
 o.attachParticle(p.node);</code></pre>
-    <p>Up until the last line there's nothing new we haven't seen yet. All the magic happens in that Orbit method: <code>attachP{article()</code>. <i>Now</i> let's look under the hood (in the Orbit class)...</p>
+    <p>Up until the last line there's nothing new we haven't seen yet. All the magic happens in that Orbit method: <code>attachParticle()</code>. Now let's take a look at that method:</p>
     <pre><code class="javascript">Orbit.prototype.attachParticle = function(particle){
     var orbit = this;
     (function(orbit, particle){
@@ -249,7 +249,7 @@ o.attachParticle(p.node);</code></pre>
     this.animateFunction();
 };</code></pre>
    <p>This method takes a particle node as its only argument. This is different from a <code>Particle</code> object in that it needs to be something that a d3 selection returned as we need to attach a transition to it.</p>
-   <p>The particle node and the <code>Orbit</code> object itself are passed into a closure that defines the orbit's <code>animateFunction</code>. This function is pretty short&emdash;define a transition on the particle node, set duration and easing, set tweening (<code>.attrTween(...)</code>), and make it call itself again when finished (<code>.each("end", orbit.animateFunction)</code>). A closure is necessary here because when the <code>.each()</code> method needs to call <code>animateFunction</code> again the keyword <code>this</code> would no longer be a reference in scope to the Orbit object. Thus we assign <code>this</code> to a new variable (<code>orbit</code>) and pass it into the closure so that it's available the same way at all scopes nested within.</p>
+   <p>The particle node and the <code>Orbit</code> object itself are passed into a closure that defines the orbit's <code>animateFunction</code>. This function is pretty short&mdash;define a transition on the particle node, set duration and easing, set tweening (<code>.attrTween(...)</code>), and make it call itself again when finished (<code>.each("end", orbit.animateFunction)</code>). A closure is necessary here because when the <code>.each()</code> method needs to call <code>animateFunction</code> again the keyword <code>this</code> would no longer be a reference in scope to the Orbit object. Thus we assign <code>this</code> to a new variable (<code>orbit</code>) and pass it into the closure so that it's available the same way at all scopes nested within.</p>
    <p>Now to break down how the tweening is defined. We use d3's <code>.attrTween()</code> method and pass two parameters: <b>"transform"</b> and a call to one final method on the orbit object, <code>orbit.transformAlong()</code>. To this we pass the d3 selection for the orbit path with the <code>node()</code> method chained off of it to pass the first non-null element of the selection (the path node itself).</p>
    <pre><code class="javascript">Orbit.prototype.transformAlong = function(path){
     var l = path.getTotalLength();
@@ -276,6 +276,7 @@ o.attachParticle(p.node);</code></pre>
 var proton = new Particle().type("proton").x(20).y(5).scale(2.5).appendTo(protium);
 var orbit = new Orbit().duration(4000)
     .path([ [20, 8], [2, 5], [20, 2], [38, 5] ])
+    // Scale the electron from 30x at t=0 to 1x at t=0.5 and back to 30x at t=1
     .scaleFunction(function(t){ return 1 + (30 * Math.abs(t - 0.5)); })
     .appendTo(protium);
 var electron = new Particle().type("electron").appendTo(protium);
@@ -283,9 +284,9 @@ orbit.attachParticle(electron.node);</code></pre>
 
     <h5>Background and Going Further</h5>
     <p>I came up with these classes while working on <a href="http://nuclides.org">Nuclides.org</a>, a d3-powered visualization of all elements and nuclides. It's a big project and I've been struggling some with finding the best ways to answer relevant questions about the world of atoms. Data is powerful and can be made beautiful, but without basic diagrams to assist visitors can quickly become lost.</p>
-    <p>I also have a good idea of where I'll need to go with these classes. Alpha and beta radiation, for example, involve changes in an atoms nucleus. In alpha radiation an alpha particle (two protons and two neutrons, or a Helium-4 nucleus) are emitted from the nucleus, and in beta radiation a proton turns into a neutron while emitting an electron. I want to show this with real data, but simple particle diagrams will be crucial to help a broader swath of visitors just <i>get it</i>.</p>
-    <p>Going further I could see easily adding more particles, even going as far as some day modeling all those in the <a href="http://physics.info/standard/">standard model</a> (I've already got one: the electron). Something I might try a little more immediately, though, might be a class to abstract a nucleus. I've worked with <a href="https://github.com/mbostock/d3/wiki/Force-Layout">force-directed graphs</a> in d3 before and could picture a class that could pack <b>Z</b> protons and <b>N</b> neutrons into a ball that jiggles randomly.</p>
-    <p>At any rate, within the next few days I should hopefully be wrapping up work on a major branch to rearchitect <a href="http://nuclides.org">Nuclides.org</a> in such a way that more readily incorporates diagrams like this as a complement to element and nuclide data. When that branch is merged and deployed the latest and greatest <code>Particle</code> and <code>Orbit</code> classes will be <a href="https://github.com/Frencil/galaxy_of_nuclides">open sourced there</a>.</p>
+    <p>I also have a good idea of where I'll need to go with these classes. Alpha and beta radiation, for example, involve changes in an atom's nucleus. In alpha radiation an alpha particle (two protons and two neutrons, also known as a Helium-4 nucleus) are emitted from the nucleus, and in beta radiation a proton turns into a neutron while emitting an electron. I want to show this with real data, and simplified particle diagrams like this will be crucial to help a broader swath of visitors just <i>get it</i>.</p>
+    <p>Going further I could see easily adding more particles, even going so far as some day modeling all those in the <a href="http://physics.info/standard/">standard model</a> (I've already got one: the electron). Something I might try a little more immediately, though, might be a class to abstract a nucleus or a mass of particles without orbits. I've worked with <a href="https://github.com/mbostock/d3/wiki/Force-Layout">force-directed graphs</a> in d3 before and could picture a class that could pack <b>Z</b> protons and <b>N</b> neutrons into a ball that jiggles randomly.</p>
+    <p>At any rate, soon I should hopefully be wrapping up work on a major branch to rearchitect <a href="http://nuclides.org">Nuclides.org</a> in such a way that more readily incorporates diagrams like this as a complement to element and nuclide data. When that branch is merged and deployed the latest and greatest <code>Particle</code> and <code>Orbit</code> classes will be <a href="https://github.com/Frencil/galaxy_of_nuclides">open sourced there</a>.</p>
 
     <h5>Full Particle and Orbit Class Declarations</h5>
     <pre><code class="javascript">"use strict";
@@ -460,6 +461,24 @@ Orbit.prototype.stroke = function(value){
     }
 };
 
+Orbit.prototype.stroke_width = function(value){
+    if (typeof value == "undefined"){
+        return this.properties.stroke_width;
+    } else {
+        this.properties.stroke_width = parseFloat(value);
+        return this;
+    }
+};
+
+Orbit.prototype.stroke_dasharray = function(value){
+    if (typeof value == "undefined"){
+        return this.properties.stroke_dasharray;
+    } else {
+        this.properties.stroke_dasharray = value.toString();
+        return this;
+    }
+};
+
 // Tension is a float between 0 and 1
 Orbit.prototype.tension = function(value){
     if (typeof value == "undefined"){
@@ -557,7 +576,7 @@ Orbit.prototype.transformAlong = function(path){
             return transform;
         };
     };
-};</code></pre>
+};</code></pre> 
     
     <div class="subtitle">
       --<br>
@@ -576,7 +595,8 @@ Orbit.prototype.transformAlong = function(path){
     <br><br>
 
     <style>
-    text.particle { 
+    text.particle {
+      font-family: Helvetica, Arial, sans-serif;
       fill: rgb(15,15,15);
     }
     circle.particle.proton {
@@ -614,7 +634,7 @@ Orbit.prototype.transformAlong = function(path){
         linkedin: <a href="https://www.linkedin.com/in/frencil">Frencil</a>
         <br>
         youtube: <a href="https://www.youtube.com/user/frencilsf/videos">FrencilSF</a>
-        
+        <br>
         <hr>
         
         <h5>Projects</h5>

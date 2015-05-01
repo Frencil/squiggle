@@ -276,6 +276,7 @@ o.attachParticle(p.node);</code></pre>
 var proton = new Particle().type("proton").x(20).y(5).scale(2.5).appendTo(protium);
 var orbit = new Orbit().duration(4000)
     .path([ [20, 8], [2, 5], [20, 2], [38, 5] ])
+    // Scale the electron from 30x at t=0 to 1x at t=0.5 and back to 30x at t=1
     .scaleFunction(function(t){ return 1 + (30 * Math.abs(t - 0.5)); })
     .appendTo(protium);
 var electron = new Particle().type("electron").appendTo(protium);
@@ -283,9 +284,9 @@ orbit.attachParticle(electron.node);</code></pre>
 
     <h5>Background and Going Further</h5>
     <p>I came up with these classes while working on <a href="http://nuclides.org">Nuclides.org</a>, a d3-powered visualization of all elements and nuclides. It's a big project and I've been struggling some with finding the best ways to answer relevant questions about the world of atoms. Data is powerful and can be made beautiful, but without basic diagrams to assist visitors can quickly become lost.</p>
-    <p>I also have a good idea of where I'll need to go with these classes. Alpha and beta radiation, for example, involve changes in an atoms nucleus. In alpha radiation an alpha particle (two protons and two neutrons, or a Helium-4 nucleus) are emitted from the nucleus, and in beta radiation a proton turns into a neutron while emitting an electron. I want to show this with real data, but simple particle diagrams will be crucial to help a broader swath of visitors just <i>get it</i>.</p>
-    <p>Going further I could see easily adding more particles, even going as far as some day modeling all those in the <a href="http://physics.info/standard/">standard model</a> (I've already got one: the electron). Something I might try a little more immediately, though, might be a class to abstract a nucleus. I've worked with <a href="https://github.com/mbostock/d3/wiki/Force-Layout">force-directed graphs</a> in d3 before and could picture a class that could pack <b>Z</b> protons and <b>N</b> neutrons into a ball that jiggles randomly.</p>
-    <p>At any rate, within the next few days I should hopefully be wrapping up work on a major branch to rearchitect <a href="http://nuclides.org">Nuclides.org</a> in such a way that more readily incorporates diagrams like this as a complement to element and nuclide data. When that branch is merged and deployed the latest and greatest <code>Particle</code> and <code>Orbit</code> classes will be <a href="https://github.com/Frencil/galaxy_of_nuclides">open sourced there</a>.</p>
+    <p>I also have a good idea of where I'll need to go with these classes. Alpha and beta radiation, for example, involve changes in an atom's nucleus. In alpha radiation an alpha particle (two protons and two neutrons, also known as a Helium-4 nucleus) are emitted from the nucleus, and in beta radiation a proton turns into a neutron while emitting an electron. I want to show this with real data, and simplified particle diagrams like this will be crucial to help a broader swath of visitors just <i>get it</i>.</p>
+    <p>Going further I could see easily adding more particles, even going so far as some day modeling all those in the <a href="http://physics.info/standard/">standard model</a> (I've already got one: the electron). Something I might try a little more immediately, though, might be a class to abstract a nucleus or a mass of particles without orbits. I've worked with <a href="https://github.com/mbostock/d3/wiki/Force-Layout">force-directed graphs</a> in d3 before and could picture a class that could pack <b>Z</b> protons and <b>N</b> neutrons into a ball that jiggles randomly.</p>
+    <p>At any rate, soon I should hopefully be wrapping up work on a major branch to rearchitect <a href="http://nuclides.org">Nuclides.org</a> in such a way that more readily incorporates diagrams like this as a complement to element and nuclide data. When that branch is merged and deployed the latest and greatest <code>Particle</code> and <code>Orbit</code> classes will be <a href="https://github.com/Frencil/galaxy_of_nuclides">open sourced there</a>.</p>
 
     <h5>Full Particle and Orbit Class Declarations</h5>
     <pre><code class="javascript">"use strict";
@@ -591,7 +592,7 @@ Orbit.prototype.transformAlong = function(path){
 
     <br><br>
 
-        <style>
+    <style>
     text.particle {
       font-family: Helvetica, Arial, sans-serif;
       fill: rgb(15,15,15);
@@ -631,7 +632,7 @@ Orbit.prototype.transformAlong = function(path){
         linkedin: <a href="https://www.linkedin.com/in/frencil">Frencil</a>
         <br>
         youtube: <a href="https://www.youtube.com/user/frencilsf/videos">FrencilSF</a>
-        
+        <br>
         <hr>
         
         <h5>Projects</h5>

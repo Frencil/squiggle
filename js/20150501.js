@@ -323,7 +323,7 @@ function renderSVG(){
     // interp2
     var i2 = d3.select("#interp2").append("g").attr("transform","scale(10)");
     var i2o = new Orbit().duration(4000)
-        .tension(0.1).interpolate("monotone")
+        .tension(1).interpolate("bundle")
         .path([ [2, 10], [10, 2], [18, 10], [10, 18] ])
         .appendTo(i2);
     var i2p = new Particle().type("neutron").appendTo(i2);
@@ -332,7 +332,7 @@ function renderSVG(){
     // interp3
     var i3 = d3.select("#interp3").append("g").attr("transform","scale(10)");
     var i3o = new Orbit().duration(4000)
-        .tension(0.9).interpolate("step")
+        .tension(0).interpolate("step")
         .path([ [2, 10], [10, 2], [18, 10], [10, 18] ])
         .appendTo(i3);
     var i3p = new Particle().type("neutron").appendTo(i3);
