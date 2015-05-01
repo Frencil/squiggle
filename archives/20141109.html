@@ -2,15 +2,18 @@
 <!-- BEGIN HEADER -->
 <html lang="en">
   <meta charset="utf-8">
-  <title>Frencil's Corner ~ Getting Back Into D3 ~ 2014-11-09</title>
+  <title>Frencil's Corner ~ Getting Back Into d3 ~ 2014-11-09</title>
   <meta name="author" content="Christopher Clark">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
   <link rel="stylesheet" href="css/normalize.css">
   <link rel="stylesheet" href="css/skeleton.css">
   <link rel="stylesheet" href="css/squiggle.css">
+  <link rel="stylesheet" href="css/docco.css">
   <link rel="icon" type="image/png" href="../favicon.png">
-  <script type="text/javascript" src="../posts.js"></script>
+  <script type="text/javascript" src="js/posts.js"></script>
+  <script type="text/javascript" src="js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
 </head>
 <body>
 
@@ -58,8 +61,7 @@
       <li><tt>&lt;g&gt;</tt> tags are positioned using dynamically generated <tt>translate()</tt> functions with <tt>transform</tt> attributes. This allows for positioning elements inside groups using relative coordinates and dramatically cuts down on coordinate translation overhead that I have to code myself.</li>
     </ul>
     <p>Given the above I've ended up with an <tt>&lt;svg&gt;</tt> that looks something like this:</p>
-    <pre>
-&lt;svg&gt;
+    <pre><code class="html">&lt;svg&gt;
   &lt;g class="element_group"&gt;
     &lt;g class="element_shell"&gt;
       &lt;g class="element_display"&gt;
@@ -77,8 +79,7 @@
     &lt;/g&gt;
     ...
   &lt;/g&gt;
-&lt;/svg&gt;
-    </pre>
+&lt;/svg&gt;</code></pre>
     <p>I've had this setup for a day and I like it. The next hurdle is to really leverage transitions to make the periodic-table-to-chart-of-nuclides animation (and it's reverse) look as neat as it does in my head. I hope I can get it working cleanly without having to rethink all this scaffolding.</p>
     
     <div class="subtitle">
@@ -98,6 +99,7 @@
     <br><br>
 
 <!-- BEGIN FOOTER -->
+        <div class="copyright">Copyright © Christopher Clark (Frencil) 2015.</div>
       </div>
       
       <div class="three columns sidelinks">
@@ -120,12 +122,12 @@
         
         <h5>Projects</h5>
         <section class="project">
-          <a href="http://eclipsetracks.org"><img src="img/icon_eclipsetracks.png" width="16" height="16"> EclipseTracks.org</a><br>
-          <div class="blurb">Explore solar eclipse predictions on a 3D WebGL globe</div>
-        </section>
-        <section class="project">
           <a href="http://nuclides.org"><img src="img/icon_nuclides.png" width="16" height="16"> Nuclides.org</a><br>
           <div class="blurb">Explore the elements and their isotopes with interactive d3.js</div>
+        </section>
+        <section class="project">
+          <a href="http://eclipsetracks.org"><img src="img/icon_eclipsetracks.png" width="16" height="16"> EclipseTracks.org</a><br>
+          <div class="blurb">Explore solar eclipse predictions on a 3D WebGL globe</div>
         </section>
         <section class="project">
           <a href="https://familygiftregistry.net"><img src="img/icon_fgr.png" width="16" height="16"> FamilyGiftRegistry.net</a><br>

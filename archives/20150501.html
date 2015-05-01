@@ -2,7 +2,7 @@
 <!-- BEGIN HEADER -->
 <html lang="en">
   <meta charset="utf-8">
-  <title>Frencil's Corner ~ Home</title>
+  <title>Frencil's Corner ~ Animated Orbiting Particles in d3 ~ 2015-05-01</title>
   <meta name="author" content="Christopher Clark">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="css/skeleton.css">
   <link rel="stylesheet" href="css/squiggle.css">
   <link rel="stylesheet" href="css/docco.css">
-  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="icon" type="image/png" href="../favicon.png">
   <script type="text/javascript" src="js/posts.js"></script>
   <script type="text/javascript" src="js/highlight.pack.js"></script>
   <script>hljs.initHighlightingOnLoad();</script>
@@ -20,7 +20,7 @@
   <div class="container">
     <div class="row">
       <div class="ten columns">
-        <h1><a href="index.html">Frencil's Corner</a></h1>
+        <h1><a href="../index.html">Frencil's Corner</a></h1>
         <div class="subtitle">Frencil is Christopher Clark, a guy who likes science, math, and programming.</div>
       </div>
       <div class="two columns unicodes">
@@ -35,6 +35,7 @@
     <div class="row">
       <div class="nine columns">
 <!-- END HEADER -->
+
     <!-- 2015-05-01 -->
     <a name="2015-05-01"></a>
     <h2>Animated Orbiting Particles in d3 ~ <span class="date">2015-05-01</span></h2>
@@ -566,13 +567,15 @@ Orbit.prototype.transformAlong = function(path){
     </div>
 
     <br><hr><br>
-    
-    <h3>Recent Posts</h3>
-    <div id="recent_posts"></div>
+
+    <div id="nav_posts">
+      <div id="nav_posts_prev"></div>
+      <div id="nav_posts_next"></div>
+    </div>
 
     <br><br>
 
-        <style>
+    <style>
     text.particle { 
       fill: rgb(15,15,15);
     }
@@ -598,8 +601,8 @@ Orbit.prototype.transformAlong = function(path){
       
       <div class="three columns sidelinks">
         
-        <h5><a href="index.html">Latest Post</a></h5>
-        <h5><a href="archives/index.html">Archives</a></h5>
+        <h5><a href="../index.html">Latest Post</a></h5>
+        <h5><a href="../archives/index.html">Archives</a></h5>
         
         <hr>
 
@@ -640,7 +643,7 @@ Orbit.prototype.transformAlong = function(path){
     </div>
   </div>
 
-  <iframe id="raw_posts" src="posts.txt" onload="render.loadPosts('recent');" style="display: none;"></iframe>
+  <iframe id="raw_posts" src="../posts.txt" onload="render.loadPosts('nav');" style="display: none;"></iframe>
 
   <!-- Piwik -->
   <script type="text/javascript">

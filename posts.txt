@@ -1,5 +1,5 @@
 2014-10-30:Initializing Frencil's Corner
-2014-11-09:Getting Back Into D3
+2014-11-09:Getting Back Into d3
 2014-11-12:When Another You Creates Branches
 2014-12-01:An Initial Look at Cesium
 2014-12-17:When the Big Five Become the Big Four
@@ -7,3 +7,4 @@
 2015-03-02:As the LHC Emerges from Hibernation
 2015-03-17:Accurate Umbral Shadows are Tricky Business
 2015-03-30:Lego, the Simpsons, and Time Lapse Techniques
+2015-05-01:Animated Orbiting Particles in d3
