@@ -106,10 +106,6 @@ section.project {
   margin-bottom: 20px;
 }
 
-section.project a { 
-  text-decoration: none;
-}
-
 section.project div.blurb {
   color: rgba(107, 113, 115, 0.8);
   font-style: italic;
