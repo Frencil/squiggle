@@ -1,0 +1,307 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!-- BEGIN HEADER -->
+<html lang="en">
+  <meta charset="utf-8">
+  <title>Frencil's Corner ~ Server-Side Javascript Files as Pages with HTML5 pushState ~ 2015-05-31</title>
+  <script type="text/javascript">
+  /************************************************************
+     ____                _ ___        _____                    
+    / _________ ___ ____(_/ ( )___   / ______  _______ ___ ____
+   / _// __/ -_/ _ / __/ / /|/(_-<  / /__/ _ \/ __/ _ / -_/ __/
+  /_/ /_/  \__/_//_\__/_/_/  /___/  \___/\___/_/ /_//_\__/_/
+  =============================================================
+  If you must know the significance of the name:
+  VmcnZiBhYmcgaXJlbCB2YWdyZXJmZ3ZhdC4gUmZmcmFndm55eWwgUHVldmYgU
+  HluZXggdmYgbmEgcmtnZXJ6cnlsIHBienpiYSBhbnpyIGZiIHpuYWwgbHJuZW
+  YgbnRiIFYgYXJycXJxIG5hIHZhZ3JlYXJnIGNmcmhxYmFseiBnYiB1bmlyIGZ
+  ienIgZnJ6b3luYXByIGJzIGhhdmRocmFyZmYgbmFxIHF2ZnBiaXJlbm92eXZn
+  bC4gU2VyYXB2eSBqbmYgbiB6YmVyIGJlIHlyZmYgZW5hcWJ6IGpiZXEgcGJ6b
+  3ZhdmF0IGN1YmFyenJmIGd1bmcgViB5dnhycSBzYmUganVuZ3JpcmUgZXJuZm
+  JhLCBuYXEgdmcgZmdocHguIEd1bmcnZiB2ZyE=
+  ************************************************************/
+  </script>                                                             
+  <meta name="author" content="Christopher Clark">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/skeleton.css">
+  <link rel="stylesheet" href="css/squiggle.css">
+  <link rel="stylesheet" href="css/docco.css">
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <script type="text/javascript" src="js/posts.js"></script>
+  <script type="text/javascript" src="js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body>
+
+  <div class="container">
+    <div class="row">
+      <div class="ten columns">
+        <h1><a href="../index.html">Frencil's Corner</a></h1>
+        <div class="subtitle">Frencil is Christopher Clark, a guy who likes science, math, and programming.</div>
+      </div>
+      <div class="two columns unicodes">
+        <h1>&#9732;</h1>
+        <div class="subtitle">&#9883;</div>
+      </div>
+    </div>
+    <div class="row">
+      <hr>
+    </div>
+
+    <div class="row">
+      <div class="nine columns">
+<!-- END HEADER -->
+    <!-- 2015-05-01 -->
+    <a name="2015-05-01"></a>
+  
+    <h2>Server-Side Javascript Files as Pages with HTML5 pushState ~ <span class="date">2015-05-31</span></h2>
+  
+    <p>Suppose I have a website that needs to behave as both a single-page site <i>and</i> a multi-page site. For example, let's say I want the top-level index page of my website to build a stage and load some data that can be displayed in arbitrarily many ways. I can build links and buttons to manipulate the data through Javascript, but my URL never changes and I can't easily return to a particular view without retracing those clicks. Each click could load a whole new page, but that would require redrawing the stage and reloading all of the data. For a large dataset this would make for a halting and unpleasant user experience.</p>
+    <p>My use case here is <a href="http://nuclides.org">Nuclides.org</a>. The top-level index page builds a stage in d3 and loads a data set large and diverse enough such that it can be shown and manipulated in countless ways but should only be loaded once per session. Navigation between different views of the data are presented as links where one would expect a URL change and standard browser history, a standard HTTP request to load the page anew would also require loading all of the data again. Fortunately HTML5 provides a solution.</p>
+  
+    <h5>Javascript Files as Pages</h5>
+    <p>To get started we need a pattern for each page. Javascript files are a natural fit here because if each page is simply presenting existing data loaded in client memory in a different way then we're going to do that with Javascript anyway. Let's start with a <code>Page</code> class:</p>
+    <pre><code class="javascript">var Page = function(){
+    this.id = null;     // URL-friendly string
+    this.title = null;  // Arbitrary string
+    this.is404 = false; // Boolean
+    this.load = null;   // Function to contain all page logic
+};
+
+// Method to convert arbitrary title string into a URL-friendly ID string
+Page.prototype.titleToID = function(){
+    return this.title.toLowerCase().replace(/\W/g,"_");
+};
+
+// Method to set title and automatically set ID
+Page.prototype.setTitle(title){
+    this.title = title.toString();
+    this.id = this.titleToId(this.title);
+}</code></pre>
+    <p>Pages are deliberately simple objects. Each has an ID and a title, both of which will be necessary for browser history. The <code>titleToID</code> method converts any string to just lower case alphanumerics with underscores to stand in for all other characters. For example, <code>Javascript Files as Pages</code> becomes <code>javascript_files_as_pages</code>. The ID will be our primary unique identifier and will appear in URLs when we get browser history working.</p>
+    <p>Tracking whether a page is the catch-all error page with the <code>is404</code> boolean will come in handy as we build in fault tolerance later. Finally, the <code>load</code> paramater is an arbitrary function where all the page's logic should live.</p>
+    <p>Before we can build our first page, though, we need the navigation scaffolding.</p>
+  
+    <h5>Navigation Scaffolding</h5>
+    <p>Let's start with another class for navigation. Inside this class we'll want to keep a copy of the page we're currently on and the next page we've just loaded. As will become apparent a bit later it will also be useful to track to the ID of the page we've attempted to load separately. Finally we'll also want to keep a cache of all loaded pages for quickly reloading ones we've already seen upon request.</p>
+    <pre><code class="javascript">var Nav = function(){
+    this.current = null; // Page
+    this.next = null;    // Page
+    this.attempt = null; // Page.id
+    this.cache = {};     // associative array: Page.id => Page
+};</code></pre>
+    <p>Next we're going to want a method on our <code>Nav</code> object to call up a new page by its ID:</p>
+    <pre><code class="javascript">Nav.prototype.call = function(page_id){
+    this.next = null;
+    (function(nav, page_id){
+        nav.fetch(page_id, function(){ // Fetch the next page from the server
+            nav.next.load(function(){  // Execute the next page's load function
+                nav.finalize();        // Page loaded: complete the transaction
+            });
+        });
+    })(this, page_id);
+};</code></pre>
+    <p>There's a lot going on here. The first thing the <code>call</code> method does is null out the <code>next</code> attribute on the <code>Nav</code> object to make way for the page we're going to load. We then have a cascade of three functions that fire inside a closure: <code>nav.fetch()</code>, <code>nav.next.load()</code>, and <code>nav.finalize()</code>. These functions fire as chained callbacks because, since we're talking to a server to get the new page, we simply don't know when each action will complete. By wrapping the entire cascade in a closure and passing in <code>this</code> as the variable <code>nav</code> we can ensure the nav object remains in scope for each function whenever it needs to ultimately fire.</p>
+    <p>So what do those other <code>Nav</code> methods look like?</p>
+  
+    <h5>Fetching Javascript with Javascript</h5>
+    <p>Loading a Javascript file from the server into a page that's already been loaded (with Javascript) is not the most straightforward task, but it's not impossible. That's what the <code>fetch()</code> method does, and here's how it looks:</p>
+    <pre><code class="javascript">Nav.prototype.fetch = function(page_id, callback){
+    
+    // If the page is already in the cache then fetch it from there
+    if (typeof this.cache[page_id] != "undefined"){
+        this.next = this.cache[page_id];
+        callback();
+        
+    // Otherwise we need to load it from the server
+    } else {
+        
+        // Store the ID we're attempting to load
+        if (page_id != '404'){ this.attempt = page_id; }
+
+        // Execute the load in a closure
+        (function(nav, page_id, callback){
+            
+            // Compose the page URI
+            var src = page_id + '.js?t=' + new Date().getTime();
+
+            // Create a new script element in the document's head
+            var head = document.getElementsByTagName("head")[0] || document.documentElement;
+            var script = document.createElement('script');
+            script.type = 'text/javascript';
+
+            // Set the new script element's src, onload, and onerror values
+            script.src = src;
+            script.onload = function(){
+                nav.next = nav.cache[page_id];
+                callback();
+            }
+            script.onerror = function(){
+                nav.next = nav.cache["404"];
+                callback();
+            }
+
+            // Append the new script element to the page to trigger the loading
+            head.appendChild(script);
+            
+        })(this, page_id, callback);
+    }
+};</code></pre>
+    <p>The first thing to notice is our built-in caching. By storing pages in the <code>Nav.cache</code> associative array by ID we can easily skip the cumbersome step of loading an external Javascript file if we've already done that.</p>
+    <p>The next thing to notice would be our 404/error handling. To use this scaffolding gracefully it's important to create a special "404" page (with an ID and title of "404") so that we can serve up something in case a page is called which doesn't exist.</p>
+    <p>Finally there's the big closure that does all the magic. Essentially, to load a Javascript file on a page that's already completely rendered, we need to inject a new <code>&lt;script&gt;</code> tag. Doing this with Javascript as we are we can set its source appropriately as well as trigger callbacks when it loads or errors. Those <code>onload</code> and <code>onerror</code> methods are <i>why</i> this entire block is in a closure, too: those methods need access to our callback method and our global <code>nav</code> object, and remember that closures create a persistent scope for all subsequent methods within. It's also important to note here how we wait until we've completely defined our new script element before we inject it into the DOM with <code>head.appendChild(script);</code>.</p>
+    <h5>Post-load Actions and Browser History</h5>
+    <p>So now we've called our page by its ID and fetched the Javascript source for it. That source was injected into the DOM as a <code>&lt;script&gt;</code> element so that it executed immediately, and that triggered the firing of <code>Nav.next.load()</code> - an arbitrary function specific to the page we've loaded. That's now triggered the callback to our last function in the chain: <code>Nav.finalize()</code>.</p>
+    <pre><code class="javascript">Nav.prototype.finalize = function(){
+    this.current = this.next;
+    this.next = null;
+    this.pushUrl();
+};</code></pre>
+    <p>Ah, something simple! Basically we bump the current page and replace it with the next page, the next page becomes null, and we then trigger a call to <code>pushUrl()</code>. This is the method that handles our browser history.</p>
+    <pre><code class="javascript">// Push URL and history for enabled browsers
+Nav.prototype.pushUrl = function(){
+    if (Modernizr.history){ // Use Modernizr to make sure the client's browser has history methods
+        var id = this.current.id;
+        var title = this.current.title;
+        if (this.current.is404){
+            id = this.attempt;
+            title = '404 - Page Not Found';
+        }
+        var state = { page: id };
+        var uri = "?" + id;
+        history.pushState(state, title, uri);
+    }
+};</code></pre>
+    <p>The first thing to note here is that we're useing <a href="http://modernizr.com/">Modernizr</a> to detect if the client has the history methods we need. Modernizr is nice lightweight Javascript library for detecting all sorts of features. It's inclusion in projects is essential to maintain a wide range of browser compatibility when using features with less-than-universal browser support. It's also very easy to use as it creates an object with a slew of booleans you can just check. In this case our <code>pushUrl()</code> won't work unless a user has HTML5 history controls, and Modernizr will give me that boolean if I load it with my original page load.</p>
+    <p>Now then, for capable browsers what we're doing here is first gathering info about where we are from the <code>current</code> page in the <code>Nav</code> object. Here's where the <code>attempt</code> parameter becomes useful. If the attempt failed and we're on a 404 page we can still pass the failed ID into the history instead of the "404" id. Finally we bundle it all together an pass it to <code>history.pushState()</code>.</p>
+    <p>This is where all the magic happens. With just that one method we've not only updated the browser history to make it look like we're on a new page (such that our back button will take us to the previous page) but <i>our browser's URL will reflect the new page we're on</i>. For example, if our home page is <code>http://foo.bar</code> and we've loaded the page <code>baz</code> via this method our URL will now show <code>http://foo.bar?baz</code> with a new accompanying browser history entry even though we never reloaded the entire page.</p>
+  
+    <h5>Putting it all Together</h5>
+    <p>Now to actually put this into action we need to define instances of our classes. Let's start with an example of defining an instance of the <code>Nav</code> class in the global scope:</p>
+    <pre><code class="javascript">var nav = new Nav();
+nav.cache['default'] = { title: "Default",
+                         id: "default",
+                         is404: false,
+                         load: function(){} };
+nav.cache['404'] = { title: "404 - Page Not Found",
+                     id: "404",
+                     is404: true,
+                     load: function(){} };
+nav.current = nav.cache.default;</code></pre>
+    <p>Defining a global <code>Nav</code> object is very straightforward. It's important to also define common pages like the 404 page and perhaps the default/initial page such that they don't need to be loaded later through script element injection via the <code>Nav.fetch()</code> method.</p>
+    </p>Pages can then be defined as separate Javascript files. For each page to function with the scaffolding the page should assume the existence of a single global <code>Nav</code> object and write its contents directly into the cache, like so:</p>
+    <pre><code class="javascript">/* Page: hello_world.js */
+var page = new Page();
+page.setTitle("Hello World");
+page.load = function(){
+    // Page-specific logic goes here
+}
+nav.cache[page.id] = page;
+</code></pre>
+    <p>We could then call this page using the scaffolding. This could be triggered by clicking a link or other navigation element, or really any conceivable event:</p>
+    <pre><code class="javascript">nav.call("hello_world");</code></pre>
+  
+    <h5>Working from the URL Backwards</h5>
+    <p>While all this will get navigation up and running from the home page we're missing one final crucial element: returning to a given page directly from a URL. Let's say I like the <b>Hello World</b> page so much that I bookmark it and want to return to it from the URL: <code>http://foo.bar?hello_world</code>. Since the URL still calls the same top-level index page for the website where I've included all my scaffolding files, Modernizr, and defined my global <code>Nav</code> object all I need to do is include a check at load-time to see if the URL includes a request for a specific page:</p>
+    <pre><code class="javascript">if (window.location.search.slice(1).length){
+    var id = window.location.search.slice(1);
+    nav.call(id);
+}</code></pre>
+    <p>The DOM stores the "search" parameter of a URL (everything after the first question mark) in <code>window.location.search</code>. Since this value includes the question mark itself we need to slice the string to remove the first character. We can then feed that value directly into <code>nav.call()</code> without fear. Because we took the time to include graceful 404 handling any visitor trying weird search parameters that don't map to valid pages will just get a 404 through the fetch method instead of seeing things break. And, for those users who liked our content and want to get back to it without all the clicks, every page is now fully bookmarkable and can serve as an entry point to the site.</p>
+    <p>**</p>
+    <p>To see a real-world use case of this, take a look at <a href="http://nuclides.org">Nuclides.org</a>. The site all loads from a top-level index file and is built as a platform for arbtirarily many "questions" (pages) about the elements and their isotopes. The data set is loaded once and the default/home page of <a href="http://nuclides.org/?what_is_nuclides_org">What is Nuclides.org?</a> can be accessed from the top-level URL or from the URL with the page ID loaded up.</p>
+    <p>Each page's load function injects new text content onto the stage while rearranging the presentation of the data. For example, <a href="http://nuclides.org/?what_is_a_nuclide">What is a Nuclide?</a> shows the entirety of the isotope/nuclide data set while <a href="http://nuclides.org/?how_do_atoms_decay">How do Atoms Decay?</a> shows only one nuclide from the data set at a time along with an interactive dashboard for playing with atomic decay modes. The modular approach to pages this way allows complex logic, like the decay dashboard in the latter example, to be kept separate from the main application logic in its own page.</p>
+    <p>This concept can be extended further, too, by using other elements of the URL. For example, in addition to <code>window.location.search</code> there is <code>window.location.hash</code>, everything that appears after the octothorpe (#). Nuclides.org utilizes this to form a pattern where a single page can be used for any of the 118 elements, as seen on the <a href="http://nuclides.org/?what_is_element#Hydrogen">What is Hydrogen?</a> page. Only one Javascript file exists for the element pages (with an ID of <code>what_is_element</code>) and the URL appends the element name after the page ID with the hash (#) mark. This does require special handling throughout the scaffolding but it's an effective way at turning this system of "pages" into a system of "pages" and "subpages", as it were.</p>
+    </p>Nuclides.org and all of its custom page scaffolding is <a href="https://github.com/Frencil/galaxy_of_nuclides">open sourced here</a>.</p>
+    
+    <div class="subtitle">
+      --<br>
+      <br>
+      Christopher Clark<br>
+      2015-05-31
+    </div>
+
+    <br><hr><br>
+
+    <div id="nav_posts">
+      <div id="nav_posts_prev"></div>
+      <div id="nav_posts_next"></div>
+    </div>
+
+    <br><br>
+
+<!-- BEGIN FOOTER -->
+        <div class="copyright">Copyright © Christopher Clark (Frencil) 2015.</div>
+      </div>
+      
+      <div class="three columns sidelinks">
+        
+        <h5><a href="../index.html">Latest Post</a></h5>
+        <h5><a href="../archives/index.html">Archives</a></h5>
+        
+        <hr>
+
+        <h5>Dossier</h5>
+        twitter: <a href="https://twitter.com/frencil">@Frencil</a>
+        <br>
+        github: <a href="https://github.com/Frencil">Frencil</a>
+        <br>
+        linkedin: <a href="https://www.linkedin.com/in/frencil">Frencil</a>
+        <br>
+        youtube: <a href="https://www.youtube.com/user/frencilsf/videos">FrencilSF</a>
+        <br><br>
+        <a href="../resume.html">Résumé</a>
+        <br>
+        <hr>
+        
+        <h5>Projects</h5>
+        <section class="project">
+          <a href="http://nuclides.org"><img src="img/icon_nuclides.png" width="16" height="16"> Nuclides.org</a><br>
+          <div class="blurb">Explore the elements and their isotopes with interactive d3.js</div>
+        </section>
+        <section class="project">
+          <a href="http://eclipsetracks.org"><img src="img/icon_eclipsetracks.png" width="16" height="16"> EclipseTracks.org</a><br>
+          <div class="blurb">Explore solar eclipse predictions on a 3D WebGL globe</div>
+        </section>
+        <section class="project">
+          <a href="https://familygiftregistry.net"><img src="img/icon_fgr.png" width="16" height="16"> FamilyGiftRegistry.net</a><br>
+          <div class="blurb">Free private gift registry / wish list system for families</div>
+        </section>
+
+        <h5>Other Writing</h5>
+        <section class="project">
+          <a href="https://www.sparkfun.com/users/18803#news">SparkFun.com Articles</a>
+        </section>
+        <section class="project">
+          <a href="http://opensource.com/users/frencil">OpenSource.com Articles</a>
+        </section>
+        <section class="project">
+          <a href="https://prezi.com/user/Frencil/">Prezi Presentations</a>
+        </section>          
+      </div>
+    </div>
+  </div>
+
+  <iframe id="raw_posts" src="../posts.txt" onload="render.loadPosts('nav');" style="display: none;"></iframe>
+
+  <!-- Piwik -->
+  <script type="text/javascript">
+  var _paq = _paq || [];
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u=(("https:" == document.location.protocol) ? "https" : "http") + "://www.familygiftregistry.net/analytics/piwik/";
+    _paq.push(['setTrackerUrl', u+'piwik.php']);
+    _paq.push(['setSiteId', 4]);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0]; g.type='text/javascript';
+    g.defer=true; g.async=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+  })();
+  </script>
+  <noscript><p><img src="http://www.familygiftregistry.net/analytics/piwik/piwik.php?idsite=4" style="border:0;" alt="" /></p></noscript>
+  <!-- End Piwik Code -->
+  
+</body>
+
+</html>
+<!-- END FOOTER -->
