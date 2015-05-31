@@ -52,13 +52,13 @@
     <div class="row">
       <div class="nine columns">
 <!-- END HEADER -->
-    <!-- 2015-05-01 -->
-    <a name="2015-05-01"></a>
+    <!-- 2015-05-31 -->
+    <a name="2015-05-31"></a>
   
     <h2>Server-Side Javascript Files as Pages with HTML5 pushState ~ <span class="date">2015-05-31</span></h2>
   
     <p>Suppose I have a website that needs to behave as both a single-page site <i>and</i> a multi-page site. For example, let's say I want the top-level index page of my website to build a stage and load some data that can be displayed in arbitrarily many ways. I can build links and buttons to manipulate the data through Javascript, but my URL never changes and I can't easily return to a particular view without retracing those clicks. Each click could load a whole new page, but that would require redrawing the stage and reloading all of the data. For a large dataset this would make for a halting and unpleasant user experience.</p>
-    <p>My use case here is <a href="http://nuclides.org">Nuclides.org</a>. The top-level index page builds a stage in d3 and loads a data set large and diverse enough such that it can be shown and manipulated in countless ways but should only be loaded once per session. Navigation between different views of the data are presented as links where one would expect a URL change and standard browser history, a standard HTTP request to load the page anew would also require loading all of the data again. Fortunately HTML5 provides a solution.</p>
+    <p>My use case here is <a href="http://nuclides.org">Nuclides.org</a>. The top-level index page builds a stage in d3 and loads a data set large and diverse enough such that it can be shown and manipulated in countless ways but should only be loaded once per session. Navigation between different views of the data are presented as links where one would expect a URL change and standard browser history, but reloading the entire stage and data set shouldn't have to happen. Fortunately HTML5 provides a solution.</p>
   
     <h5>Javascript Files as Pages</h5>
     <p>To get started we need a pattern for each page. Javascript files are a natural fit here because if each page is simply presenting existing data loaded in client memory in a different way then we're going to do that with Javascript anyway. Let's start with a <code>Page</code> class:</p>

@@ -52,548 +52,168 @@
     <div class="row">
       <div class="nine columns">
 <!-- END HEADER -->
-    <!-- 2015-05-01 -->
-    <a name="2015-05-01"></a>
-    <h2>Animated Orbiting Particles in d3 ~ <span class="date">2015-05-01</span></h2>
-    <p>So let's say I wanted to build an SVG atom in d3. Something like this:</p>
-    <figure>
-      <svg width="300" height="250" id="helium4"></svg>
-      <figcaption>A spritely Helium-4 atom. Not drawn to scale.</figcaption>
-    </figure>
-    <p>A basic atom diagram like this is more engaging and flexible than a static graphic. But suppose I wanted to digram any combination of these particles, like other types of atoms. Since it only takes three particles to make an atom (protons, neutrons, and electrons) this is a good use case for some object-oriented javascript.</p>
-    <h5>Abstracting Particles</h5>
-    <p>Let's start with declaring a Particle class.</p>
-    <pre><code class="javascript">var Particle = function(){
-    this.node = null;
-    this.properties = {
-        type: null,
-        id: '',
-        x: 0,
-        y: 0,
-        scale: 1
-    };
-    this.types = {
-        proton: {
-            circle: { r: 1, stroke_width: 0.1 },
-            text: { text: 'p+', x: -0.65, y: 0.4, font_size: 1.3 }
-        },
-        neutron: {
-            circle: { r: 0.9, stroke_width: 0.1 },
-            text: { text: 'n', x: -0.4, y: 0.35, font_size: 1.3 }
-        },
-        electron: {
-            circle: { r: 0.1, stroke_width: 0.02 },
-            text: { text: 'e-', x: -0.06, y: 0.045, font_size: 0.15 }
-        }
-    };
-};</code></pre>
-    <p>Our <code>Particle</code> class has three top-level attributes: <code>node</code>, <code>properties</code>, and <code>types</code>. We'll get to node and types in a minute, but first, why put object attributes like id and position inside another object instead of as top-level attributes? While it will make internal references to those properties slightly more verbose it allows us to emulate the d3 API's approach of both setting <i>and</i> getting any property with just a single method. Here's an example for setting and getting <code>id</code>:</p>
-    <pre><code class="javascript">Particle.prototype.id = function(value){
-    if (typeof value == "undefined"){
-        return this.properties.id;
-    } else {
-        this.properties.id = value.toString();
-        return this;
-    }
-};</code></pre>
-    <p>If no argument is passed to a method&mdash;e.g. <code>Particle.id()</code>&mdash;the Particle is unchanged and in this example the value of the Particle's <code>id</code> property is returned. If an argument is passed, however&mdash;e.g. <code>Particle.id("foo")</code>&mdash;the Particle's <code>id</code> attribute is set to the value. Also worth noting is the return value: <code>this</code>. This is the simple approach that allows chaining methods, also emulated from the d3 API and countless other javascript frameworks. It allows creating a Particle to be done flexibly in a single command, like this:</p>
-    <pre><code class="javascript">var p = new Particle().id("foo").x(10).y(20);</code></pre>
-    <p>The full Particle class declaration is at the bottom of this blog post, so we'll skip the rest of the property getter/setter methods for now. Suffice it to say that every value in the <code>properties</code> object should have a corresponding getter/setter function, each with it's own input validation.</p>
-    <h5>Particle Types and Rendering</h5>
-    <p>Let's take a closer look at the three basic types defined in the Particle class's declaration:</p>
-    <pre><code class="javascript">this.types = {
-    proton: {
-        circle: { r: 1, stroke_width: 0.1 },
-        text: { text: 'p+', x: -0.65, y: 0.4, font_size: 1.3 }
-    },
-    neutron: {
-        circle: { r: 0.9, stroke_width: 0.1 },
-        text: { text: 'n', x: -0.4, y: 0.35, font_size: 1.3 }
-    },
-    electron: {
-        circle: { r: 0.1, stroke_width: 0.02 },
-        text: { text: 'e-', x: -0.06, y: 0.045, font_size: 0.15 }
-    }
-};</code></pre>
-    <p>Each type describes the basic appearance of a certain particle. For simplicity's sake all particles are essentially a circle and a piece of text. Since these would be literally appended to a parent SVG as <code>&lt;circle&gt;</code> and <code>&lt;text&gt;</code> objects we can define each of these with the attributes they'll need. Thus, the proton has a circle with <code>r</code> (radius) of 1 and <code>stroke_width</code> of 0.1.</p>
-    <p>There are a lot of magic numbers here, but there's a pattern. Consider the relative radii of each type's circle. Proton, at radius <b>1</b>, is our unit particle. Electrons are <i>way</i> smaller than protons (about 1/2,000th the size), but that scale is a bit ridiculous for medium-sized diagrams, so let's just crank the electron down by an order of magnitude to <b>0.1</b>. Now neutrons are actually a shade smaller than protons, and a good approximation is that a proton minus an electron is a neutron (hey, that's how <a href="http://en.wikipedia.org/wiki/Beta_decay">beta decay</a> works!), so let's do set the neutron radius to that difference of <b>0.9</b>. All the other magic numbers sort of fall out from what looks "good" given those initial particle sizes. Especially when sizing and positioning text; SVG text can vary across browsers and the line-height-to-letter-height ratio varies depending on glyphs and fonts. When designing text in SVG one can mitigate sloppiness but never eliminate it.</p>
-    <p>At this point I had to select which attributes would be baked into the javascript declarations (possibly making them configurable with each Particle definition) or bake them into the CSS as classes. In general, since <a href="http://jsperf.com/style-element-vs-attr">classes render faster than styles</a> and are not defined inside logic, I favor using CSS as the default location for all attributes and pull only the ones I know I'll want to change on a per-particle basis into javascript. But since flexibility is awesome and inflexibility sucks the CSS ended up with mostly just colors.</p>
-    <pre><code class="css">text.particle {
-    font-family: Helvetica, Arial, sans-serif;
-    fill: rgb(15,15,15);
-}
-circle.particle.proton {
-    fill: rgb(170,255,186);
-    stroke: rgb(102,153,112);
-}
-circle.particle.neutron {
-    fill: rgb(255,213,170);
-    stroke: rgb(153,128,102);
-}
-circle.particle.electron {
-    fill: rgb(170,227,255);
-    stroke: rgb(102,136,153);
+    <!-- 2015-05-31 -->
+    <a name="2015-05-31"></a>
+  
+    <h2>Server-Side Javascript Files as Pages with HTML5 pushState ~ <span class="date">2015-05-31</span></h2>
+  
+    <p>Suppose I have a website that needs to behave as both a single-page site <i>and</i> a multi-page site. For example, let's say I want the top-level index page of my website to build a stage and load some data that can be displayed in arbitrarily many ways. I can build links and buttons to manipulate the data through Javascript, but my URL never changes and I can't easily return to a particular view without retracing those clicks. Each click could load a whole new page, but that would require redrawing the stage and reloading all of the data. For a large dataset this would make for a halting and unpleasant user experience.</p>
+    <p>My use case here is <a href="http://nuclides.org">Nuclides.org</a>. The top-level index page builds a stage in d3 and loads a data set large and diverse enough such that it can be shown and manipulated in countless ways but should only be loaded once per session. Navigation between different views of the data are presented as links where one would expect a URL change and standard browser history, but reloading the entire stage and data set shouldn't have to happen. Fortunately HTML5 provides a solution.</p>
+  
+    <h5>Javascript Files as Pages</h5>
+    <p>To get started we need a pattern for each page. Javascript files are a natural fit here because if each page is simply presenting existing data loaded in client memory in a different way then we're going to do that with Javascript anyway. Let's start with a <code>Page</code> class:</p>
+    <pre><code class="javascript">var Page = function(){
+    this.id = null;     // URL-friendly string
+    this.title = null;  // Arbitrary string
+    this.is404 = false; // Boolean
+    this.load = null;   // Function to contain all page logic
+};
+
+// Method to convert arbitrary title string into a URL-friendly ID string
+Page.prototype.titleToID = function(){
+    return this.title.toLowerCase().replace(/\W/g,"_");
+};
+
+// Method to set title and automatically set ID
+Page.prototype.setTitle(title){
+    this.title = title.toString();
+    this.id = this.titleToId(this.title);
 }</code></pre>
-    <p>Now to render a defined particle we can once again borrow from d3. Let's imagine the syntax we <i>want</i> and then make that syntax work (this is essentially test-driven development in a nutshell). Since I don't want to crawl inside the guts of d3 but I will be busy chaining methods to define a Particle, I could do something like this:</p>
-    <pre><code class="javascript">var p = new Particle().id("foo").appendTo(d3.select("svg"));</code></pre>
-    <p>What we're essentially doing is finishing the method chain with a special function to actually append the particle group to the SVG. Also, since d3 selectors are objects that can be passed around easily, taking a selector as the only argument tells us <i>where</i> to do the rendering. This is powerful and important because in SVG layers and nesting are absolute determinants to the appearance of the final product, so our class will be far more robust if we can add particles as children of any object in the SVG. Here's a simplification of how <code>Particle.appendTo()</code> works:</p>
-    <pre><code class="javascript">Particle.prototype.appendTo = function(selector){
-    var particle = this.types[this.properties.type];
-    // Sanity check - make sure particle type is valid
-    if (typeof particle == "undefined"){
-        console.log("Error - particle type not set");
-        return;
-    }
-    // Add a group to which we can render all of the objects that make up the particle
-    this.node = selector.append("g")
-        .attr("id", this.properties.id)
-        .attr("transform", "translate(" + this.properties.x + "," + this.properties.y + ")");
-    // Loop through the particle type's defined objects.
-    // Append the object to our parent group and set all of its attributes.
-    for (var object in particle){
-        var o = this.node.append(object)
-           .attr("class","particle " + this.properties.type);
-        for (var attr in particle[object]){
-            o.attr(attr, particle[object][attr]);
-        }
-    }
-    return this;
+    <p>Pages are deliberately simple objects. Each has an ID and a title, both of which will be necessary for browser history. The <code>titleToID</code> method converts any string to just lower case alphanumerics with underscores to stand in for all other characters. For example, <code>Javascript Files as Pages</code> becomes <code>javascript_files_as_pages</code>. The ID will be our primary unique identifier and will appear in URLs when we get browser history working.</p>
+    <p>Tracking whether a page is the catch-all error page with the <code>is404</code> boolean will come in handy as we build in fault tolerance later. Finally, the <code>load</code> paramater is an arbitrary function where all the page's logic should live.</p>
+    <p>Before we can build our first page, though, we need the navigation scaffolding.</p>
+  
+    <h5>Navigation Scaffolding</h5>
+    <p>Let's start with another class for navigation. Inside this class we'll want to keep a copy of the page we're currently on and the next page we've just loaded. As will become apparent a bit later it will also be useful to track to the ID of the page we've attempted to load separately. Finally we'll also want to keep a cache of all loaded pages for quickly reloading ones we've already seen upon request.</p>
+    <pre><code class="javascript">var Nav = function(){
+    this.current = null; // Page
+    this.next = null;    // Page
+    this.attempt = null; // Page.id
+    this.cache = {};     // associative array: Page.id => Page
 };</code></pre>
-    <p>There's a lot going on here. First of all we do a simple sanity check on the particle type. Once cleared we append a new group node to the parent selector and store it in the Particle's <code>node</code> property. The group node takes on the ID defined in the Particle's properties as well as the x and y position by way of the <code>transform</code> attribute. We can translate, scale, and rotate arbitrarily intricate particles to our heart's content this way, so long as we apply our transformations to the parent group. We can also get a d3 selector for that group node quickly via the <code>node</code> property, and this will become useful when we get into orbits.</p>
-    <p>Once the parent group is defined we loop through the defined SVG objects for the particle type (e.g. the <code>circle</code> and <code>text</code> objects). Each object kicks off another loop to set its attributes, like the radius on the circle or the line-height on the text. Note that in this simplified version the setting of attributes was collapsed to a single line... oh if only it was that easy! As you can see in the complete class definition at the bottom of this post that block of logic is actually a much less attractive switch statement. For this we can thank minor inconsistencies between the three languages in play (such as the mix of "attribute" and "style" or the use of hyphens in CSS) and leave it at that.</p>
-    <h5>Let's Orbit!</h5>
-    <p>Okay, so particles are neat but once defined they just sit there without further animation. Ideally Particles should be able to orbit other particles or be sent along any arbitrary path.</p>
-    <p>For simplicity sake, let's call all such paths orbits. An orbit can be defined much like a particle, to start:</p>
-    <pre><code class="javascript">var Orbit = function(){
-    this.node = null;
-    this.properties = {
-        id: '',
-        path: null,
-        stroke: "rgb(128,128,128)",
-        stroke_width: 0.1,
-        stroke_dasharray: "1, 2",
-        tension: 0.5,
-        interpolate: "cardinal-closed",
-        duration: 1000,
-        ease: "out-in",
-        scaleFunction: null,
-        animateFunction: null
-    };
+    <p>Next we're going to want a method on our <code>Nav</code> object to call up a new page by its ID:</p>
+    <pre><code class="javascript">Nav.prototype.call = function(page_id){
+    this.next = null;
+    (function(nav, page_id){
+        nav.fetch(page_id, function(){ // Fetch the next page from the server
+            nav.next.load(function(){  // Execute the next page's load function
+                nav.finalize();        // Page loaded: complete the transaction
+            });
+        });
+    })(this, page_id);
 };</code></pre>
-    <p>This declaration is nothing more than a list of default properties. The scalars among these (everything but <code>scaleFunction</code> and <code>animateFunction</code>) can and should each have a unified getter/setter method just like in the Particle class. Let's skip ahead to the <code>appendTo()</code> method to render orbits to the SVG:</p>
-    <pre><code class="javascript">Orbit.prototype.appendTo = function(selector){
-    this.node = selector.append("path")
-        .attr("id", this.properties.id)
-        .attr("class", "orbit")
-        .attr("fill", "none")
-        .attr("stroke-width", this.properties.stroke_width)
-        .attr("stroke", this.properties.stroke)
-        .attr("stroke-dasharray", this.properties.stroke_dasharray)
-        .data([this.properties.path])
-        .attr("d", d3.svg.line().tension(this.properties.tension).interpolate(this.properties.interpolate));
-    return this;
-};</code></pre>
-    <p>This appears simpler than the Particle's <code>appendTo()</code> method because we haven't differentiated orbit types and there's no dynamic creation of SVG objects in addition to the path itself. Just as with Particle we're storing the appended node in the Orbit's <code>node</code> attribute, but there's no parent group here, just a single <code>&lt;path&gt;</code> node.</p>
-    <p>In the last two lines of the path node's creation, though, some less trivial d3 code pops up. First is the call to the <code>data()</code> method, which takes our path property wrapped in an array. For a comprehensive and high-level overview on what that core d3 method does, see the d3 documention on <a href="http://bost.ocks.org/mike/selection/#data">How Selections Work # Bound to Data</a>. But to simplify it consider this: we want a path along which we can animate a particle, so we'll need to interpolate between points on that path. In order to interpolate d3 needs to parse the path's points as data, so we feed it in through the <code>data()</code> method instead of defining the path's points as an attribute (which would be valid SVG but we couldn't interact with it).</p>
-    <p>The final line where we set the <code>d</code> attribute defines our interpolation. The tension value (a float bewteen 0 and 1) and the interpolate value (a string) are what change the interpolated path along which our particle will travel from the initial as-the-crow-flies progession (straight lines between each point with a constant speed) to, well, practically anything we want. Just look at some of the weird stuff you can do!</p>
-    <div class="row">
-        <div class="four columns">
-            <figure>
-                <svg width="200" height="200" id="interp1"></svg>
-                <figcaption><b>#interp1:</b> Tension: 0.5; Interpolate: cardinal-closed.</figcaption>
-            </figure>
-        </div>
-        <div class="four columns">
-            <figure>
-                <svg width="200" height="200" id="interp2"></svg>
-                <figcaption><b>#interp2:</b> Tension: 0.1; Interpolate: monotone.</figcaption>
-            </figure>
-        </div>
-        <div class="four columns">
-            <figure>
-                <svg width="200" height="200" id="interp3"></svg>
-                <figcaption><b>#interp3:</b> Tension: 0.9; Interpolate: step.</figcaption>
-            </figure>
-        </div>
-    </div>
-    <pre><code class="javascript">// interp1
-var i1 = d3.select("#interp1").append("g").attr("transform","scale(10)");
-var i1o = new Orbit().id("i1o").duration(4000)
-    .tension(0.5).interpolate("cardinal-closed")
-    .path([ [2, 10], [10, 2], [18, 10], [10, 18] ])
-    .appendTo(i1);
-var i1p = new Particle().type("neutron").id("i1p").scale(1).appendTo(i1);
-i1o.attachParticle(i1p.node);
+    <p>There's a lot going on here. The first thing the <code>call</code> method does is null out the <code>next</code> attribute on the <code>Nav</code> object to make way for the page we're going to load. We then have a cascade of three functions that fire inside a closure: <code>nav.fetch()</code>, <code>nav.next.load()</code>, and <code>nav.finalize()</code>. These functions fire as chained callbacks because, since we're talking to a server to get the new page, we simply don't know when each action will complete. By wrapping the entire cascade in a closure and passing in <code>this</code> as the variable <code>nav</code> we can ensure the nav object remains in scope for each function whenever it needs to ultimately fire.</p>
+    <p>So what do those other <code>Nav</code> methods look like?</p>
+  
+    <h5>Fetching Javascript with Javascript</h5>
+    <p>Loading a Javascript file from the server into a page that's already been loaded (with Javascript) is not the most straightforward task, but it's not impossible. That's what the <code>fetch()</code> method does, and here's how it looks:</p>
+    <pre><code class="javascript">Nav.prototype.fetch = function(page_id, callback){
+    
+    // If the page is already in the cache then fetch it from there
+    if (typeof this.cache[page_id] != "undefined"){
+        this.next = this.cache[page_id];
+        callback();
+        
+    // Otherwise we need to load it from the server
+    } else {
+        
+        // Store the ID we're attempting to load
+        if (page_id != '404'){ this.attempt = page_id; }
 
-// interp2
-var i2 = d3.select("#interp2").append("g").attr("transform","scale(10)");
-var i2o = new Orbit().id("i2o").duration(4000)
-    .tension(0.1).interpolate("monotone")
-    .path([ [2, 10], [10, 2], [18, 10], [10, 18] ])
-    .appendTo(i2);
-var i2p = new Particle().type("neutron").id("i2p").scale(1).appendTo(i2);
-i2o.attachParticle(i2p.node);
+        // Execute the load in a closure
+        (function(nav, page_id, callback){
+            
+            // Compose the page URI
+            var src = page_id + '.js?t=' + new Date().getTime();
 
-// interp3
-var i3 = d3.select("#interp3").append("g").attr("transform","scale(10)");
-var i3o = new Orbit().id("i3o").duration(4000)
-    .tension(0.9).interpolate("step")
-    .path([ [2, 10], [10, 2], [18, 10], [10, 18] ])
-    .appendTo(i3);
-var i3p = new Particle().type("neutron").id("i3p").scale(1).appendTo(i3);
-i3o.attachParticle(i3p.node);</code></pre>
-    <p>All of the above examples have the same paths and particles and only vary the tension and line interpolation. <a href="https://github.com/mbostock/d3/wiki/SVG-Shapes#line_interpolate">A full list of d3 line interpolations can be found here</a> and they take some experimentation to really understand. This might also make clear why the defaults baked into the Orbit class's declaration are just so: tenion of <b>0.5</b> and interpolation of <b>cardinal-closed</b> will generate smooth loops with just a few points (only four points are needed for any circular or elliptical orbit). Note that tension and interpolation will only change the way the <code>&lt;path&gt;</code> node intersects with the points we define.</p>
-    <h5>Attaching Particles to Orbits and Making Them Go</h5>
-    <p>We can now define a particle and an orbit but we have yet to put the former on the latter to make it dance. To pull this off we borrow heavily from <a href="http://bl.ocks.org/mbostock/1705868">this d3 Point-Along-Path Interpolation</a>. But let's not dive under the hood just yet... let's take a closer look at syntax like that which generated the first interpolation example above:</p>
-    <pre><code class="javascript">var g = d3.select("svg").append("g");
-var o = new Orbit().duration(4000)
-    .tension(0.5).interpolate("cardinal-closed")
-    .path([ [2, 10], [10, 2], [18, 10], [10, 18] ])
-    .appendTo(g);
-var p = new Particle().type("neutron").appendTo(g);
-o.attachParticle(p.node);</code></pre>
-    <p>Up until the last line there's nothing new we haven't seen yet. All the magic happens in that Orbit method: <code>attachParticle()</code>. Now let's take a look at that method:</p>
-    <pre><code class="javascript">Orbit.prototype.attachParticle = function(particle){
-    var orbit = this;
-    (function(orbit, particle){
-        orbit.animateFunction = function(){
-            particle.transition()
-                .duration(orbit.duration()).ease(orbit.ease())
-                .attrTween("transform", orbit.transformAlong(orbit.node.node()))
-                .each("end", orbit.animateFunction);
-        };
-    })(orbit, particle);
-    this.animateFunction();
-};</code></pre>
-   <p>This method takes a particle node as its only argument. This is different from a <code>Particle</code> object in that it needs to be something that a d3 selection returned as we need to attach a transition to it.</p>
-   <p>The particle node and the <code>Orbit</code> object itself are passed into a closure that defines the orbit's <code>animateFunction</code>. This function is pretty short&mdash;define a transition on the particle node, set duration and easing, set tweening (<code>.attrTween(...)</code>), and make it call itself again when finished (<code>.each("end", orbit.animateFunction)</code>). A closure is necessary here because when the <code>.each()</code> method needs to call <code>animateFunction</code> again the keyword <code>this</code> would no longer be a reference in scope to the Orbit object. Thus we assign <code>this</code> to a new variable (<code>orbit</code>) and pass it into the closure so that it's available the same way at all scopes nested within.</p>
-   <p>Now to break down how the tweening is defined. We use d3's <code>.attrTween()</code> method and pass two parameters: <b>"transform"</b> and a call to one final method on the orbit object, <code>orbit.transformAlong()</code>. To this we pass the d3 selection for the orbit path with the <code>node()</code> method chained off of it to pass the first non-null element of the selection (the path node itself).</p>
-   <pre><code class="javascript">Orbit.prototype.transformAlong = function(path){
-    var l = path.getTotalLength();
-    var orbit = this;
-    return function(d, i, a) {
-        return function(t) {
-            var p = path.getPointAtLength(t * l);
-            var transform = "translate(" + p.x + "," + p.y + ")";
-            if (typeof orbit.properties.scaleFunction == "function"){
-                var s = orbit.properties.scaleFunction(t); 
-                transform += " scale(" + s + ")";
+            // Create a new script element in the document's head
+            var head = document.getElementsByTagName("head")[0] || document.documentElement;
+            var script = document.createElement('script');
+            script.type = 'text/javascript';
+
+            // Set the new script element's src, onload, and onerror values
+            script.src = src;
+            script.onload = function(){
+                nav.next = nav.cache[page_id];
+                callback();
             }
-            return transform;
-        };
-    };
-};</code></pre>
-   <p>Here's the final method in the Orbit class. Its purpose is to generate a <b>transform</b> string, or the value to go with the transform attribute on the <code>&lt;path&gt;</code>. Transform strings usually look something like this: <b>"translate(1, 2) scale(3)"</b>. The <code>transformAlong()</code> method makes use of two d3 path methods (<code>getTotalLength()</code> and <code>getPointAtLength()</code>) to generate <b>x</b> and <b>y</b> values for a point on the path at time <b>t</b>. The value <b>t</b> is a float that ranges from <b>0</b> to <b>1</b> as we tween along one full length of the path. This means for a looping path the x/y coordinates at <b>t = 0</b> are the same as those at <b>t = 1</b>.</p>
-   <p>This method is also where we see the <code>scaleFunction</code> property get used. This is a property that can be set with a chained method much like setting id or tension. It's not a scalar, however. It's a function that generates a scale value (arbitrary float) at time <b>t</b>. I added this because I could, but also because scaling a particle as it moves along a path can provide an illusion of depth.</p>
-    <figure>
-      <svg width="400" height="100" id="protium"></svg>
-      <figcaption>Hydrogen-1 (Protium) showing off a little depth.</figcaption>
-    </figure>
-    <pre><code class="javascript">var protium = d3.select("#protium").append("g").attr("transform","scale(10)");
-var proton = new Particle().type("proton").x(20).y(5).scale(2.5).appendTo(protium);
-var orbit = new Orbit().duration(4000)
-    .path([ [20, 8], [2, 5], [20, 2], [38, 5] ])
-    // Scale the electron from 30x at t=0 to 1x at t=0.5 and back to 30x at t=1
-    .scaleFunction(function(t){ return 1 + (30 * Math.abs(t - 0.5)); })
-    .appendTo(protium);
-var electron = new Particle().type("electron").appendTo(protium);
-orbit.attachParticle(electron.node);</code></pre>
-
-    <h5>Background and Going Further</h5>
-    <p>I came up with these classes while working on <a href="http://nuclides.org">Nuclides.org</a>, a d3-powered visualization of all elements and nuclides. It's a big project and I've been struggling some with finding the best ways to answer relevant questions about the world of atoms. Data is powerful and can be made beautiful, but without basic diagrams to assist visitors can quickly become lost.</p>
-    <p>I also have a good idea of where I'll need to go with these classes. Alpha and beta radiation, for example, involve changes in an atom's nucleus. In alpha radiation an alpha particle (two protons and two neutrons, also known as a Helium-4 nucleus) are emitted from the nucleus, and in beta radiation a proton turns into a neutron while emitting an electron. I want to show this with real data, and simplified particle diagrams like this will be crucial to help a broader swath of visitors just <i>get it</i>.</p>
-    <p>Going further I could see easily adding more particles, even going so far as some day modeling all those in the <a href="http://physics.info/standard/">standard model</a> (I've already got one: the electron). Something I might try a little more immediately, though, might be a class to abstract a nucleus or a mass of particles without orbits. I've worked with <a href="https://github.com/mbostock/d3/wiki/Force-Layout">force-directed graphs</a> in d3 before and could picture a class that could pack <b>Z</b> protons and <b>N</b> neutrons into a ball that jiggles randomly.</p>
-    <p>At any rate, soon I should hopefully be wrapping up work on a major branch to rearchitect <a href="http://nuclides.org">Nuclides.org</a> in such a way that more readily incorporates diagrams like this as a complement to element and nuclide data. When that branch is merged and deployed the latest and greatest <code>Particle</code> and <code>Orbit</code> classes will be <a href="https://github.com/Frencil/galaxy_of_nuclides">open sourced there</a>.</p>
-
-    <h5>Full Particle and Orbit Class Declarations</h5>
-    <pre><code class="javascript">"use strict";
-
-/**
-   Particle - A simple group of shapes and text to depict particles such as protons or neutrons
-   Example usage: 
-   var p = new Particle().type("foo").appendTo(parent);
-*/
-var Particle = function(){
-    this.node = null;
-    this.properties = {
-        type: null,
-        id: '',
-        x: 0,
-        y: 0,
-        scale: 1
-    };
-    this.types = {
-        proton: {
-            circle: { r: 1, stroke_width: 0.1 },
-            text: { text: 'p+', x: -0.65, y: 0.4, font_size: 1.3 }
-        },
-        neutron: {
-            circle: { r: 0.9, stroke_width: 0.1 },
-            text: { text: 'n', x: -0.4, y: 0.35, font_size: 1.3 }
-        },
-        electron: {
-            circle: { r: 0.1, stroke_width: 0.02 },
-            text: { text: 'e-', x: -0.06, y: 0.045, font_size: 0.15 }
-        }
-    };
-};
-
-// Type is a required string and must match a type in this.types
-Particle.prototype.type = function(value){
-    if (typeof value == "undefined"){
-        return this.properties.type;
-    } else {
-        if (typeof this.types[value] == "undefined"){
-            console.log("Error - invalid particle type:" + value);
-        } else {
-            this.properties.type = value.toString();
-        }
-        return this;
-    }
-};
-
-Particle.prototype.id = function(value){
-    if (typeof value == "undefined"){
-        return this.properties.id;
-    } else {
-        this.properties.id = value.toString();
-        return this;
-    }
-};
-
-Particle.prototype.x = function(value){
-    if (typeof value == "undefined"){
-        return this.properties.x;
-    } else {
-        this.properties.x = parseFloat(value);
-        return this;
-    }
-};
-
-Particle.prototype.y = function(value){
-    if (typeof value == "undefined"){
-        return this.properties.y;
-    } else {
-        this.properties.y = parseFloat(value);
-        return this;
-    }
-};
-
-// An arbitrary float to scale the particle's radius and label.
-// All particles have a radius relative to the proton, which has a radius of 1.
-Particle.prototype.scale = function(value){
-    if (typeof value == "undefined"){
-        return this.properties.scale;
-    } else {
-        this.properties.scale = parseFloat(value);
-        return this;
-    }
-};
-
-// Render the particle SVG object group as a child of the provided selector
-Particle.prototype.appendTo = function(selector){
-    var particle = this.types[this.properties.type];
-    if (typeof particle == "undefined"){
-        console.log("Error - particle type not set");
-        return false;
-    }
-    this.node = selector.append("g").attr("id", this.properties.id)
-        .attr("transform", "translate(" + this.properties.x + "," + this.properties.y + ")");
-    for (var object in particle){
-        var o = this.node.append(object).attr("class","particle " + this.properties.type);
-        for (var attr in particle[object]){
-            var val = particle[object][attr];
-            var css_attr = attr.replace("_","-");
-            switch(css_attr){
-            case 'text':
-                o.text(val);
-                break;
-            case 'font-size':
-                o.style(css_attr, (val * this.properties.scale) + "px");
-                break;
-            case "stroke-width":
-            case "r":
-            case "x":
-            case "y":
-                val *= this.properties.scale;
-            default:
-                o.attr(css_attr, val);
-                break;
+            script.onerror = function(){
+                nav.next = nav.cache["404"];
+                callback();
             }
-        }
+
+            // Append the new script element to the page to trigger the loading
+            head.appendChild(script);
+            
+        })(this, page_id, callback);
     }
-    return this;
-};
-
-/**
-   Orbit - A path along which a Particle can be made to travel
-   Example usage:
-   var o = new Orbit().path([ [0, 1], [1, 1], [1, 0], [0, 0] ]).appendTo(parent);
-   var p = new Particle().type("foo").appendTo(parent);
-   o.attachParticle(p.node);
-*/
-
-var Orbit = function(){
-    this.node = null;
-    this.properties = {
-        id: '',
-        path: 1,
-        stroke: "rgb(128,128,128)",
-        stroke_width: 0.1,
-        stroke_dasharray: "1, 2",
-        tension: 0.5,
-        interpolate: "cardinal-closed",
-        duration: 1000,
-        ease: "out-in",
-        scaleFunction: null,
-        animateFunction: null
-    };
-};
-
-Orbit.prototype.id = function(value){
-    if (typeof value == "undefined"){
-        return this.properties.id;
-    } else {
-        this.properties.id = value.toString();
-        return this;
-    }
-};
-
-// Path should be provided as an array of two-value arrays (e.g. [ [x1, y1], [x2, y2], ... ])
-Orbit.prototype.path = function(value){
-    if (typeof value == "undefined"){
-        return this.properties.path;
-    } else {
-        this.properties.path = value;
-        return this;
-    }
-};
-
-Orbit.prototype.stroke = function(value){
-    if (typeof value == "undefined"){
-        return this.properties.stroke;
-    } else {
-        this.properties.stroke = value.toString();
-        return this;
-    }
-};
-
-Orbit.prototype.stroke_width = function(value){
-    if (typeof value == "undefined"){
-        return this.properties.stroke_width;
-    } else {
-        this.properties.stroke_width = parseFloat(value);
-        return this;
-    }
-};
-
-Orbit.prototype.stroke_dasharray = function(value){
-    if (typeof value == "undefined"){
-        return this.properties.stroke_dasharray;
-    } else {
-        this.properties.stroke_dasharray = value.toString();
-        return this;
-    }
-};
-
-// Tension is a float between 0 and 1
-Orbit.prototype.tension = function(value){
-    if (typeof value == "undefined"){
-        return this.properties.tension;
-    } else {
-        this.properties.tension = parseFloat(value);
-        return this;
-    }
-};
-
-// See d3 documentation on line interpolation: https://github.com/mbostock/d3/wiki/SVG-Shapes#line_interpolate
-Orbit.prototype.interpolate = function(value){
-    if (typeof value == "undefined"){
-        return this.properties.interpolate;
-    } else {
-        this.properties.interpolate = value.toString();
-        return this;
-    }
-};
-
-// Time for a particle to travel the full length of the path once, in milliseconds
-Orbit.prototype.duration = function(value){
-    if (typeof value == "undefined"){
-        return this.properties.duration;
-    } else {
-        this.properties.duration = parseInt(value);
-        return this;
-    }
-};
-
-// See d3 documentation on easing: https://github.com/mbostock/d3/wiki/Transitions#d3_ease
-Orbit.prototype.ease = function(value){
-    if (typeof value == "undefined"){
-        return this.properties.ease;
-    } else {
-        this.properties.ease = value.toString();
-        return this;
-    }
-};
-
-// Scale is a function that converts a particle's position along the path (float from 0 to 1)
-// to scaling transformation on the particle itself (an arbitrary float).
-// E.g.: new Orbit().scale(function(t){ return 1 + t; }); will scale a particle from 1x to 2x
-// as it travels along the full length of the path from t = 0 to t = 1.
-Orbit.prototype.scaleFunction = function(value){
-    if (typeof value == "undefined"){
-        return this.properties.scaleFunction;
-    } else if (typeof value == "function") {
-        this.properties.scaleFunction = value;
-        return this;
-    }
-};
-
-// Render the path SVG object as a child of the provided selector
-Orbit.prototype.appendTo = function(selector){
-    this.node = selector.append("path")
-        .attr("id", this.properties.id)
-        .attr("class", "orbit")
-        .attr("fill", "none")
-        .attr("stroke-width", this.properties.stroke_width)
-        .attr("stroke", this.properties.stroke)
-        .attr("stroke-dasharray", this.properties.stroke_dasharray)
-        .data([this.properties.path])
-        .attr("d", d3.svg.line().tension(this.properties.tension).interpolate(this.properties.interpolate));
-    return this;
-};
-
-// Attach an existing particle to the path to animate its motion along the path.
-// Note: path and particle must already be rendered as SVG objects before this is called.
-Orbit.prototype.attachParticle = function(particle){
-    var orbit = this;
-    (function(orbit, particle){
-        orbit.animateFunction = function(){
-            particle.transition()
-                .duration(orbit.duration()).ease(orbit.ease())
-                .attrTween("transform", orbit.transformAlong(orbit.node.node()))
-                .each("end", orbit.animateFunction);
-        };
-    })(orbit, particle);
-    this.animateFunction();
-};
-
-// Private function used to generate transform values for every step in a particle's animation along a path
-Orbit.prototype.transformAlong = function(path){
-    var l = path.getTotalLength();
-    var orbit = this;
-    return function(d, i, a) {
-        return function(t) {
-            var p = path.getPointAtLength(t * l);
-            var transform = "translate(" + p.x + "," + p.y + ")";
-            if (typeof orbit.properties.scaleFunction == "function"){
-                var s = orbit.properties.scaleFunction(t); 
-                transform += " scale(" + s + ")";
-            }
-            return transform;
-        };
-    };
 };</code></pre>
+    <p>The first thing to notice is our built-in caching. By storing pages in the <code>Nav.cache</code> associative array by ID we can easily skip the cumbersome step of loading an external Javascript file if we've already done that.</p>
+    <p>The next thing to notice would be our 404/error handling. To use this scaffolding gracefully it's important to create a special "404" page (with an ID and title of "404") so that we can serve up something in case a page is called which doesn't exist.</p>
+    <p>Finally there's the big closure that does all the magic. Essentially, to load a Javascript file on a page that's already completely rendered, we need to inject a new <code>&lt;script&gt;</code> tag. Doing this with Javascript as we are we can set its source appropriately as well as trigger callbacks when it loads or errors. Those <code>onload</code> and <code>onerror</code> methods are <i>why</i> this entire block is in a closure, too: those methods need access to our callback method and our global <code>nav</code> object, and remember that closures create a persistent scope for all subsequent methods within. It's also important to note here how we wait until we've completely defined our new script element before we inject it into the DOM with <code>head.appendChild(script);</code>.</p>
+    <h5>Post-load Actions and Browser History</h5>
+    <p>So now we've called our page by its ID and fetched the Javascript source for it. That source was injected into the DOM as a <code>&lt;script&gt;</code> element so that it executed immediately, and that triggered the firing of <code>Nav.next.load()</code> - an arbitrary function specific to the page we've loaded. That's now triggered the callback to our last function in the chain: <code>Nav.finalize()</code>.</p>
+    <pre><code class="javascript">Nav.prototype.finalize = function(){
+    this.current = this.next;
+    this.next = null;
+    this.pushUrl();
+};</code></pre>
+    <p>Ah, something simple! Basically we bump the current page and replace it with the next page, the next page becomes null, and we then trigger a call to <code>pushUrl()</code>. This is the method that handles our browser history.</p>
+    <pre><code class="javascript">// Push URL and history for enabled browsers
+Nav.prototype.pushUrl = function(){
+    if (Modernizr.history){ // Use Modernizr to make sure the client's browser has history methods
+        var id = this.current.id;
+        var title = this.current.title;
+        if (this.current.is404){
+            id = this.attempt;
+            title = '404 - Page Not Found';
+        }
+        var state = { page: id };
+        var uri = "?" + id;
+        history.pushState(state, title, uri);
+    }
+};</code></pre>
+    <p>The first thing to note here is that we're useing <a href="http://modernizr.com/">Modernizr</a> to detect if the client has the history methods we need. Modernizr is nice lightweight Javascript library for detecting all sorts of features. It's inclusion in projects is essential to maintain a wide range of browser compatibility when using features with less-than-universal browser support. It's also very easy to use as it creates an object with a slew of booleans you can just check. In this case our <code>pushUrl()</code> won't work unless a user has HTML5 history controls, and Modernizr will give me that boolean if I load it with my original page load.</p>
+    <p>Now then, for capable browsers what we're doing here is first gathering info about where we are from the <code>current</code> page in the <code>Nav</code> object. Here's where the <code>attempt</code> parameter becomes useful. If the attempt failed and we're on a 404 page we can still pass the failed ID into the history instead of the "404" id. Finally we bundle it all together an pass it to <code>history.pushState()</code>.</p>
+    <p>This is where all the magic happens. With just that one method we've not only updated the browser history to make it look like we're on a new page (such that our back button will take us to the previous page) but <i>our browser's URL will reflect the new page we're on</i>. For example, if our home page is <code>http://foo.bar</code> and we've loaded the page <code>baz</code> via this method our URL will now show <code>http://foo.bar?baz</code> with a new accompanying browser history entry even though we never reloaded the entire page.</p>
+  
+    <h5>Putting it all Together</h5>
+    <p>Now to actually put this into action we need to define instances of our classes. Let's start with an example of defining an instance of the <code>Nav</code> class in the global scope:</p>
+    <pre><code class="javascript">var nav = new Nav();
+nav.cache['default'] = { title: "Default",
+                         id: "default",
+                         is404: false,
+                         load: function(){} };
+nav.cache['404'] = { title: "404 - Page Not Found",
+                     id: "404",
+                     is404: true,
+                     load: function(){} };
+nav.current = nav.cache.default;</code></pre>
+    <p>Defining a global <code>Nav</code> object is very straightforward. It's important to also define common pages like the 404 page and perhaps the default/initial page such that they don't need to be loaded later through script element injection via the <code>Nav.fetch()</code> method.</p>
+    </p>Pages can then be defined as separate Javascript files. For each page to function with the scaffolding the page should assume the existence of a single global <code>Nav</code> object and write its contents directly into the cache, like so:</p>
+    <pre><code class="javascript">/* Page: hello_world.js */
+var page = new Page();
+page.setTitle("Hello World");
+page.load = function(){
+    // Page-specific logic goes here
+}
+nav.cache[page.id] = page;
+</code></pre>
+    <p>We could then call this page using the scaffolding. This could be triggered by clicking a link or other navigation element, or really any conceivable event:</p>
+    <pre><code class="javascript">nav.call("hello_world");</code></pre>
+  
+    <h5>Working from the URL Backwards</h5>
+    <p>While all this will get navigation up and running from the home page we're missing one final crucial element: returning to a given page directly from a URL. Let's say I like the <b>Hello World</b> page so much that I bookmark it and want to return to it from the URL: <code>http://foo.bar?hello_world</code>. Since the URL still calls the same top-level index page for the website where I've included all my scaffolding files, Modernizr, and defined my global <code>Nav</code> object all I need to do is include a check at load-time to see if the URL includes a request for a specific page:</p>
+    <pre><code class="javascript">if (window.location.search.slice(1).length){
+    var id = window.location.search.slice(1);
+    nav.call(id);
+}</code></pre>
+    <p>The DOM stores the "search" parameter of a URL (everything after the first question mark) in <code>window.location.search</code>. Since this value includes the question mark itself we need to slice the string to remove the first character. We can then feed that value directly into <code>nav.call()</code> without fear. Because we took the time to include graceful 404 handling any visitor trying weird search parameters that don't map to valid pages will just get a 404 through the fetch method instead of seeing things break. And, for those users who liked our content and want to get back to it without all the clicks, every page is now fully bookmarkable and can serve as an entry point to the site.</p>
+    <p>**</p>
+    <p>To see a real-world use case of this, take a look at <a href="http://nuclides.org">Nuclides.org</a>. The site all loads from a top-level index file and is built as a platform for arbtirarily many "questions" (pages) about the elements and their isotopes. The data set is loaded once and the default/home page of <a href="http://nuclides.org/?what_is_nuclides_org">What is Nuclides.org?</a> can be accessed from the top-level URL or from the URL with the page ID loaded up.</p>
+    <p>Each page's load function injects new text content onto the stage while rearranging the presentation of the data. For example, <a href="http://nuclides.org/?what_is_a_nuclide">What is a Nuclide?</a> shows the entirety of the isotope/nuclide data set while <a href="http://nuclides.org/?how_do_atoms_decay">How do Atoms Decay?</a> shows only one nuclide from the data set at a time along with an interactive dashboard for playing with atomic decay modes. The modular approach to pages this way allows complex logic, like the decay dashboard in the latter example, to be kept separate from the main application logic in its own page.</p>
+    <p>This concept can be extended further, too, by using other elements of the URL. For example, in addition to <code>window.location.search</code> there is <code>window.location.hash</code>, everything that appears after the octothorpe (#). Nuclides.org utilizes this to form a pattern where a single page can be used for any of the 118 elements, as seen on the <a href="http://nuclides.org/?what_is_element#Hydrogen">What is Hydrogen?</a> page. Only one Javascript file exists for the element pages (with an ID of <code>what_is_element</code>) and the URL appends the element name after the page ID with the hash (#) mark. This does require special handling throughout the scaffolding but it's an effective way at turning this system of "pages" into a system of "pages" and "subpages", as it were.</p>
+    </p>Nuclides.org and all of its custom page scaffolding is <a href="https://github.com/Frencil/galaxy_of_nuclides">open sourced here</a>.</p>
     
     <div class="subtitle">
       --<br>
@@ -608,27 +228,6 @@ Orbit.prototype.transformAlong = function(path){
     <div id="recent_posts"></div>
 
     <br><br>
-
-    <style>
-    text.particle {
-      font-family: Helvetica, Arial, sans-serif;
-      fill: rgb(15,15,15);
-    }
-    circle.particle.proton {
-      fill: rgb(170,255,186);
-      stroke: rgb(102,153,112);
-    }
-    circle.particle.neutron {
-      fill: rgb(255,213,170);
-      stroke: rgb(153,128,102);
-    }
-    circle.particle.electron {
-      fill: rgb(170,227,255);
-      stroke: rgb(102,136,153);
-    }
-    </style>
-    <script language="JavaScript" src="js/d3.min.js"></script>
-    <script language="JavaScript" src="js/20150501.js"></script>
 
 <!-- BEGIN FOOTER -->
         <div class="copyright">Copyright © Christopher Clark (Frencil) 2015.</div>
