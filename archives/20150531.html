@@ -57,9 +57,23 @@
   
     <h2>Server-Side Javascript Files as Pages with HTML5 pushState ~ <span class="date">2015-05-31</span></h2>
   
-    <p>Suppose I have a website that needs to behave as both a single-page site <i>and</i> a multi-page site. For example, let's say I want the top-level index page of my website to build a stage and load some data that can be displayed in arbitrarily many ways. I can build links and buttons to manipulate the data through Javascript, but my URL never changes and I can't easily return to a particular view without retracing those clicks. Each click could load a whole new page, but that would require redrawing the stage and reloading all of the data. For a large dataset this would make for a halting and unpleasant user experience.</p>
-    <p>My use case here is <a href="http://nuclides.org">Nuclides.org</a>. The top-level index page builds a stage in d3 and loads a data set large and diverse enough such that it can be shown and manipulated in countless ways but should only be loaded once per session. Navigation between different views of the data are presented as links where one would expect a URL change and standard browser history, but reloading the entire stage and data set shouldn't have to happen. Fortunately HTML5 provides a solution.</p>
-  
+    <p>Suppose I have a website that needs to behave as both a single-page site <i>and</i> a multi-page site. For example, let's say I want the top-level index page of my website to build a stage and load some data that can be displayed in arbitrarily many ways. I can build links and buttons to manipulate the data through Javascript, but my URL never changes and I can't easily return to a particular view without retracing those clicks. Each click could load a whole new page, but that would require redrawing the stage and reloading all of the data. For a large dataset this would make for a halting and unpleasant user experience. Fortunately HTML5 provides a solution.</p>
+    <p>For a trivial example to demonstrate the concept here's a demo:</p>
+    <div class="row">
+      <div class="four columns">
+        <ul>
+          <li><a style="cursor: pointer;" onclick="nav.call('default');">Default</a></li>
+          <li><a style="cursor: pointer;" onclick="nav.call('hello_world');">Hello World</a></li>
+          <li><a style="cursor: pointer;" onclick="nav.call('fibonacci');">Fibonacci Sequence</a></li>
+        </ul>
+      </div>
+      <div class="eight columns">
+        <pre><code id="page_content">...</code></pre>
+      </div>
+    </div>
+    <p>Click any of the links on the left and you should see the field on the right be populated with new values. This alone is nothing fancy, but take note of the the URL of this page in your browser as you click the links - it should be changing along with your clicks. You should also be able to use your browser's back and forward buttons to retrace your steps, or you can reload this page with a search query to go directly to one of the links.</p>
+    <p>This is achieved by building separate Javascript files for each link (or page), loading them with some DOM injection, and manipulating the browser history using HTML5's <a href="https://developer.mozilla.org/en-US/docs/Web/Guide/API/DOM/Manipulating_the_browser_history">history</a> object (specifically the <code>pushState()</code> method). Read on to see how it's done!</p>
+
     <h5>Javascript Files as Pages</h5>
     <p>To get started we need a pattern for each page. Javascript files are a natural fit here because if each page is simply presenting existing data loaded in client memory in a different way then we're going to do that with Javascript anyway. Let's start with a <code>Page</code> class:</p>
     <pre><code class="javascript">var Page = function(){
@@ -70,15 +84,15 @@
 };
 
 // Method to convert arbitrary title string into a URL-friendly ID string
-Page.prototype.titleToID = function(){
+Page.prototype.titleToId = function(){
     return this.title.toLowerCase().replace(/\W/g,"_");
 };
 
 // Method to set title and automatically set ID
-Page.prototype.setTitle(title){
+Page.prototype.setTitle = function(title){
     this.title = title.toString();
-    this.id = this.titleToId(this.title);
-}</code></pre>
+    this.id = this.titleToId();
+};</code></pre>
     <p>Pages are deliberately simple objects. Each has an ID and a title, both of which will be necessary for browser history. The <code>titleToID</code> method converts any string to just lower case alphanumerics with underscores to stand in for all other characters. For example, <code>Javascript Files as Pages</code> becomes <code>javascript_files_as_pages</code>. The ID will be our primary unique identifier and will appear in URLs when we get browser history working.</p>
     <p>Tracking whether a page is the catch-all error page with the <code>is404</code> boolean will come in handy as we build in fault tolerance later. Finally, the <code>load</code> paramater is an arbitrary function where all the page's logic should live.</p>
     <p>Before we can build our first page, though, we need the navigation scaffolding.</p>
@@ -183,23 +197,33 @@ Nav.prototype.pushUrl = function(){
 nav.cache['default'] = { title: "Default",
                          id: "default",
                          is404: false,
-                         load: function(){} };
+                         load: function(callback){
+                             // Load the default page
+                             callback();
+                         }
+                       };
 nav.cache['404'] = { title: "404 - Page Not Found",
                      id: "404",
                      is404: true,
-                     load: function(){} };
-nav.current = nav.cache.default;</code></pre>
+                     load: function(callback){
+                         // Load the 404 page
+                         callback();
+                     }
+                   };
+nav.call("default");</code></pre>
     <p>Defining a global <code>Nav</code> object is very straightforward. It's important to also define common pages like the 404 page and perhaps the default/initial page such that they don't need to be loaded later through script element injection via the <code>Nav.fetch()</code> method.</p>
     </p>Pages can then be defined as separate Javascript files. For each page to function with the scaffolding the page should assume the existence of a single global <code>Nav</code> object and write its contents directly into the cache, like so:</p>
     <pre><code class="javascript">/* Page: hello_world.js */
 var page = new Page();
 page.setTitle("Hello World");
-page.load = function(){
+page.load = function(callback){
     // Page-specific logic goes here
+    callback();
 }
 nav.cache[page.id] = page;
 </code></pre>
-    <p>We could then call this page using the scaffolding. This could be triggered by clicking a link or other navigation element, or really any conceivable event:</p>
+    <p>Note that the load function needs to accept a single parameter for a callback function which it calls at the end of its logic. This pattern is how the scaffolding knows the loading function is complete so that it can finalize by manipulating the history object.</p>
+    <p>We can now call this page using the scaffolding. This could be triggered by clicking a link or other navigation element, or really any conceivable event:</p>
     <pre><code class="javascript">nav.call("hello_world");</code></pre>
   
     <h5>Working from the URL Backwards</h5>
@@ -207,10 +231,26 @@ nav.cache[page.id] = page;
     <pre><code class="javascript">if (window.location.search.slice(1).length){
     var id = window.location.search.slice(1);
     nav.call(id);
+} else {
+    nav.call("default");
 }</code></pre>
     <p>The DOM stores the "search" parameter of a URL (everything after the first question mark) in <code>window.location.search</code>. Since this value includes the question mark itself we need to slice the string to remove the first character. We can then feed that value directly into <code>nav.call()</code> without fear. Because we took the time to include graceful 404 handling any visitor trying weird search parameters that don't map to valid pages will just get a 404 through the fetch method instead of seeing things break. And, for those users who liked our content and want to get back to it without all the clicks, every page is now fully bookmarkable and can serve as an entry point to the site.</p>
+    <h5>Last Step: Detecting <code>popstate</code> Events</h5>
+    <p>The final step in making this all work end-to-end is detecting what's called a <a href="https://developer.mozilla.org/en-US/docs/Web/Events/popstate">popstate event</a>. The term <code>popstate</code> has the same etymology as <code>pushState</code> in that the history object behaves like a stack. I don't know why the former isn't camel-cased and the latter is but either way a popstate event is triggered whenever a browser's back or forward buttons are clicked. We can define an event listener for these events to essentially tie those browser buttons to our <code>nav.call()</code> method when the history is telling us to load a specific page.</p>
+    <pre><code class="javascript">// Listen for popstate events (users navigating history through
+// browser controls) to make that navigation work as expected
+window.onpopstate = function(event) {
+    if (typeof event.state == "object"){
+        if (typeof event.state.page == "string"){
+            nav.call(event.state.page);
+        }
+    }
+};</code></pre>
+    <p>Since we don't want to completely overtake the user's back and forward buttons when they get into history before or after our website our event listener first makes sure there's a <code>state</code> object in the event and then makes sure that the <code>state</code> object has a <code>page</code> attribute. Recall in our <code>Nav.prototype.pushUrl()</code> method we created a <code>state</code> object with a <code>page</code> attribute set to the ID of the page for the history entry. As the popstate event triggers this same object is what we're capturing and feeding back into our <code>nav.call()</code> method, so we're safe if the popstate event returns history that we didn't create (in such a case the default back/forward action will happen).</p>
     <p>**</p>
-    <p>To see a real-world use case of this, take a look at <a href="http://nuclides.org">Nuclides.org</a>. The site all loads from a top-level index file and is built as a platform for arbtirarily many "questions" (pages) about the elements and their isotopes. The data set is loaded once and the default/home page of <a href="http://nuclides.org/?what_is_nuclides_org">What is Nuclides.org?</a> can be accessed from the top-level URL or from the URL with the page ID loaded up.</p>
+    <p>And that's it! With this basic scaffolding it's possible to build an entire functioning website with pure dynamic loading of javascript files. This will effectively provide the ability to have arbitrarily many pages loadable and navigable within a single page that never reloads.</p>
+    <h5>A Real-World Example</h5>
+    <p>To see another real-world use case of this, take a look at <a href="http://nuclides.org">Nuclides.org</a>. The site all loads from a top-level index file and is built as a platform for arbtirarily many "questions" (pages) about the elements and their isotopes. The data set is loaded once and the default/home page of <a href="http://nuclides.org/?what_is_nuclides_org">What is Nuclides.org?</a> can be accessed from the top-level URL or from the URL with the page ID loaded up.</p>
     <p>Each page's load function injects new text content onto the stage while rearranging the presentation of the data. For example, <a href="http://nuclides.org/?what_is_a_nuclide">What is a Nuclide?</a> shows the entirety of the isotope/nuclide data set while <a href="http://nuclides.org/?how_do_atoms_decay">How do Atoms Decay?</a> shows only one nuclide from the data set at a time along with an interactive dashboard for playing with atomic decay modes. The modular approach to pages this way allows complex logic, like the decay dashboard in the latter example, to be kept separate from the main application logic in its own page.</p>
     <p>This concept can be extended further, too, by using other elements of the URL. For example, in addition to <code>window.location.search</code> there is <code>window.location.hash</code>, everything that appears after the octothorpe (#). Nuclides.org utilizes this to form a pattern where a single page can be used for any of the 118 elements, as seen on the <a href="http://nuclides.org/?what_is_element#Hydrogen">What is Hydrogen?</a> page. Only one Javascript file exists for the element pages (with an ID of <code>what_is_element</code>) and the URL appends the element name after the page ID with the hash (#) mark. This does require special handling throughout the scaffolding but it's an effective way at turning this system of "pages" into a system of "pages" and "subpages", as it were.</p>
     </p>Nuclides.org and all of its custom page scaffolding is <a href="https://github.com/Frencil/galaxy_of_nuclides">open sourced here</a>.</p>
@@ -230,6 +270,48 @@ nav.cache[page.id] = page;
     </div>
 
     <br><br>
+
+    <script language="JavaScript" src="js/modernizr.min.js"></script>
+    <script language="JavaScript" src="js/20150531.js"></script>
+    <script language="JavaScript">
+
+    // Define the nav object with default and 404 pages
+    var nav = new Nav();
+    nav.cache['default'] = { title: "Default",
+                             id: "default",
+                             is404: false,
+                             load: function(callback){
+                                 document.getElementById("page_content").innerHTML = "This is the default page.\nWelcome to the pushState demo!";
+                                 callback();
+                             }
+                           };
+    nav.cache['404'] = { title: "404 - Page Not Found",
+                         id: "404",
+                         is404: true,
+                         load: function(callback){
+                             document.getElementById("page_content").innerHTML = "404 - Page Not Found\nAttempted page id: " + nav.attempt;
+                             callback();
+                         }
+                       };
+
+    // Load the first page (from serach query if provided or just the default)
+    if (window.location.search.slice(1).length){
+        var id = window.location.search.slice(1);
+        nav.call(id);
+    } else {
+        nav.call("default");
+    }
+
+    // Listen for popstate events (users navigating history through
+    // browser controls) to make that navigation work as expected
+    window.onpopstate = function(event) {
+        if (typeof event.state == "object"){
+            if (typeof event.state.page == "string"){
+                nav.call(event.state.page);
+            }
+        }
+    };
+    </script>
 
 <!-- BEGIN FOOTER -->
         <div class="copyright">Copyright © Christopher Clark (Frencil) 2015.</div>
