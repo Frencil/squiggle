@@ -25,15 +25,16 @@ var Nav = function(){
     this.cache = {};     // associative array: Page.id => Page
 };
 
-Nav.prototype.call = function(page_id){
+Nav.prototype.call = function(page_id, frompopstate){
     this.next = null;
-    (function(nav, page_id){
-        nav.fetch(page_id, function(){ // Fetch the next page from the server
-            nav.next.load(function(){  // Execute the next page's load function
-                nav.finalize();        // Page loaded: complete the transaction
+    if (typeof frompopstate == 'undefined'){ var frompopstate = false; }
+    (function(nav, page_id, frompopstate){
+        nav.fetch(page_id, function(){      // Fetch the next page from the server
+            nav.next.load(function(){       // Execute the next page's load function
+                nav.finalize(frompopstate); // Page loaded: complete the transaction
             });
         });
-    })(this, page_id);
+    })(this, page_id, frompopstate);
 };
 
 Nav.prototype.fetch = function(page_id, callback){
@@ -78,10 +79,12 @@ Nav.prototype.fetch = function(page_id, callback){
     }
 };
 
-Nav.prototype.finalize = function(){
+Nav.prototype.finalize = function(frompopstate){
     this.current = this.next;
     this.next = null;
-    this.pushUrl();
+    if (!frompopstate){
+        this.pushUrl();
+    }
 };
 
 // Push URL and history for enabled browsers

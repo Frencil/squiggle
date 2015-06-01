@@ -247,13 +247,213 @@ window.onpopstate = function(event) {
     }
 };</code></pre>
     <p>Since we don't want to completely overtake the user's back and forward buttons when they get into history before or after our website our event listener first makes sure there's a <code>state</code> object in the event and then makes sure that the <code>state</code> object has a <code>page</code> attribute. Recall in our <code>Nav.prototype.pushUrl()</code> method we created a <code>state</code> object with a <code>page</code> attribute set to the ID of the page for the history entry. As the popstate event triggers this same object is what we're capturing and feeding back into our <code>nav.call()</code> method, so we're safe if the popstate event returns history that we didn't create (in such a case the default back/forward action will happen).</p>
+    <h5>The Real Last Step: Special-Casing <code>popstate</code> Events</h5>
+    <p>It sure <i>looks</i> like we're done, but not quite. When we trigger a <code>nav.call()</code> on a popstate event that call will cascade into <code>nav.finalize()</code> and, subsequently, <code>nav.pushUrl()</code>. That method will then write the current state to the history even though we've just pulled it from history (say, with a back button). In practice this approach of firing <code>pushState</code> every time we finalize will make our back or forward buttons only work once.</p>
+    <p>To get around this we just need to pass some context so that whenever we're calling a new page from a popstate event we <i>don't</i> fire <code>nav.pushUrl()</code>. First we can modify the scaffolding to pass through an additional optional argument:</p>
+    <pre><code class="javascript">Nav.prototype.call = function(page_id, frompopstate){
+    this.next = null;
+    if (typeof frompopstate == 'undefined'){ var frompopstate = false; }
+    (function(nav, page_id, frompopstate){
+        nav.fetch(page_id, function(){      // Fetch the next page from the server
+            nav.next.load(function(){       // Execute the next page's load function
+                nav.finalize(frompopstate); // Page loaded: complete the transaction
+            });
+        });
+    })(this, page_id, frompopstate);
+};
+
+Nav.prototype.finalize = function(frompopstate){
+    this.current = this.next;
+    this.next = null;
+    if (!frompopstate){
+        this.pushUrl();
+    }
+};</code></pre>
+    <p>And then we can modify just the <code>nav.call()</code> instance in the onpopstate event handler to pass the flag:</p>
+    <pre><code class="javascript">// Listen for popstate events (users navigating history through
+// browser controls) to make that navigation work as expected
+window.onpopstate = function(event) {
+    if (typeof event.state == "object"){
+        if (typeof event.state.page == "string"){
+            nav.call(event.state.page, true);
+        }
+    }
+};</code></pre>
+    <p>And now <code>pushUrl()</code>, which triggers the <code>pushState</code>, will only fire when appropriate. Our browser's back and forward buttons should now work 100% as expected.</p>
     <p>**</p>
-    <p>And that's it! With this basic scaffolding it's possible to build an entire functioning website with pure dynamic loading of javascript files. This will effectively provide the ability to have arbitrarily many pages loadable and navigable within a single page that never reloads.</p>
+    <p><b>And that's it!</b> With this basic scaffolding it's possible to build an entire functioning website with pure dynamic loading of javascript files. This will effectively provide the ability to have arbitrarily many pages loadable and navigable within a single page that never reloads.</p>
+  
     <h5>A Real-World Example</h5>
     <p>To see another real-world use case of this, take a look at <a href="http://nuclides.org">Nuclides.org</a>. The site all loads from a top-level index file and is built as a platform for arbtirarily many "questions" (pages) about the elements and their isotopes. The data set is loaded once and the default/home page of <a href="http://nuclides.org/?what_is_nuclides_org">What is Nuclides.org?</a> can be accessed from the top-level URL or from the URL with the page ID loaded up.</p>
     <p>Each page's load function injects new text content onto the stage while rearranging the presentation of the data. For example, <a href="http://nuclides.org/?what_is_a_nuclide">What is a Nuclide?</a> shows the entirety of the isotope/nuclide data set while <a href="http://nuclides.org/?how_do_atoms_decay">How do Atoms Decay?</a> shows only one nuclide from the data set at a time along with an interactive dashboard for playing with atomic decay modes. The modular approach to pages this way allows complex logic, like the decay dashboard in the latter example, to be kept separate from the main application logic in its own page.</p>
     <p>This concept can be extended further, too, by using other elements of the URL. For example, in addition to <code>window.location.search</code> there is <code>window.location.hash</code>, everything that appears after the octothorpe (#). Nuclides.org utilizes this to form a pattern where a single page can be used for any of the 118 elements, as seen on the <a href="http://nuclides.org/?what_is_element#Hydrogen">What is Hydrogen?</a> page. Only one Javascript file exists for the element pages (with an ID of <code>what_is_element</code>) and the URL appends the element name after the page ID with the hash (#) mark. This does require special handling throughout the scaffolding but it's an effective way at turning this system of "pages" into a system of "pages" and "subpages", as it were.</p>
     </p>Nuclides.org and all of its custom page scaffolding is <a href="https://github.com/Frencil/galaxy_of_nuclides">open sourced here</a>.</p>
+
+    <h5>Full Scaffolding Code</h5>
+    <p>Recall there are are two pieces to the scaffolding code: the class definitions themselves and then the instance and event handler definitions.</p>
+    <p><b>Class Definitions</b></p>
+    <pre><code class="javascript">var Page = function(){
+    this.id = null;     // URL-friendly string
+    this.title = null;  // Arbitrary string
+    this.is404 = false; // Boolean
+    this.load = null;   // Function to contain all page logic
+};
+
+// Method to convert arbitrary title string into a URL-friendly ID string
+Page.prototype.titleToId = function(){
+    return this.title.toLowerCase().replace(/\W/g,"_");
+};
+
+// Method to set title and automatically set ID
+Page.prototype.setTitle = function(title){
+    this.title = title.toString();
+    this.id = this.titleToId();
+};
+
+var Nav = function(){
+    this.current = null; // Page
+    this.next = null;    // Page
+    this.attempt = null; // Page.id
+    this.cache = {};     // associative array: Page.id => Page
+};
+
+Nav.prototype.call = function(page_id, frompopstate){
+    this.next = null;
+    if (typeof frompopstate == 'undefined'){ var frompopstate = false; }
+    (function(nav, page_id, frompopstate){
+        nav.fetch(page_id, function(){      // Fetch the next page from the server
+            nav.next.load(function(){       // Execute the next page's load function
+                nav.finalize(frompopstate); // Page loaded: complete the transaction
+            });
+        });
+    })(this, page_id, frompopstate);
+};
+
+Nav.prototype.fetch = function(page_id, callback){
+    
+    // If the page is already in the cache then fetch it from there
+    if (typeof this.cache[page_id] != "undefined"){
+        this.next = this.cache[page_id];
+        callback();
+        
+    // Otherwise we need to load it from the server
+    } else {
+        
+        // Store the ID we're attempting to load
+        if (page_id != '404'){ this.attempt = page_id; }
+
+        // Execute the load in a closure
+        (function(nav, page_id, callback){
+            
+            // Compose the page URI
+            var src = 'js/' + page_id + '.js?t=' + new Date().getTime();
+
+            // Create a new script element in the document's head
+            var head = document.getElementsByTagName("head")[0] || document.documentElement;
+            var script = document.createElement('script');
+            script.type = 'text/javascript';
+
+            // Set the new script element's src, onload, and onerror values
+            script.src = src;
+            script.onload = function(){
+                nav.next = nav.cache[page_id];
+                callback();
+            }
+            script.onerror = function(){
+                nav.next = nav.cache["404"];
+                callback();
+            }
+
+            // Append the new script element to the page to trigger the loading
+            head.appendChild(script);
+            
+        })(this, page_id, callback);
+    }
+};
+
+Nav.prototype.finalize = function(frompopstate){
+    this.current = this.next;
+    this.next = null;
+    if (!frompopstate){
+        this.pushUrl();
+    }
+};
+
+// Push URL and history for enabled browsers
+Nav.prototype.pushUrl = function(){
+    if (Modernizr.history){
+        var id = this.current.id;
+        var title = this.current.title;
+        if (this.current.is404){
+            id = this.attempt;
+            title = '404 - Page Not Found';
+        }
+        var state = { page: id };
+        var uri = "?" + id;
+        history.pushState(state, title, uri);
+    }
+};</code></pre>
+    <p><b>Instance and Event Handler Definitions</b></p>
+    <pre><code class="javascript">// Define the nav object with default and 404 pages
+var nav = new Nav();
+nav.cache['default'] = { title: "Default",
+                         id: "default",
+                         is404: false,
+                         load: function(callback){
+                             document.getElementById("page_content").innerHTML = "This is the default page.\nWelcome to the pushState demo!";
+                             callback();
+                         }
+                       };
+nav.cache['404'] = { title: "404 - Page Not Found",
+                     id: "404",
+                     is404: true,
+                     load: function(callback){
+                         document.getElementById("page_content").innerHTML = "404 - Page Not Found\nAttempted page id: " + nav.attempt;
+                         callback();
+                     }
+                   };
+
+// Load the first page (from serach query if provided or just the default)
+if (window.location.search.slice(1).length){
+    var id = window.location.search.slice(1);
+    nav.call(id);
+} else {
+    nav.call("default");
+}
+
+// Listen for popstate events (users navigating history through
+// browser controls) to make that navigation work as expected
+window.onpopstate = function(event) {
+    if (typeof event.state == "object"){
+        if (typeof event.state.page == "string"){
+            nav.call(event.state.page, true);
+        }
+    }
+};</code></pre>
+    <p>And, just for good measure, here's the source for the <b>Hello World</b> and <b>Fibonacci</b> pages:</p>
+    <pre><code class="javascript">/* Page: hello_world.js */
+var page = new Page();
+page.setTitle("Hello World");
+page.load = function(callback){
+    document.getElementById("page_content").innerHTML = "This page just prints a message.\nHello World!";
+    callback();
+}
+nav.cache[page.id] = page;
+
+/* Page: fibonacci.js */
+var page = new Page();
+page.setTitle("Fibonacci");
+page.load = function(callback){
+    var seq = [ 1, 1 ];
+    var n = 0;
+    while (n < 10){
+        seq.push(seq[seq.length-1]+seq[seq.length-2]);
+        n++;        
+    }
+    document.getElementById("page_content").innerHTML = "This page generates the Fibonacci Sequence.\n[" + seq.toString() + "]";
+    callback();
+}
+nav.cache[page.id] = page;</code></pre>
     
     <div class="subtitle">
       --<br>
@@ -307,7 +507,7 @@ window.onpopstate = function(event) {
     window.onpopstate = function(event) {
         if (typeof event.state == "object"){
             if (typeof event.state.page == "string"){
-                nav.call(event.state.page);
+                nav.call(event.state.page, true);
             }
         }
     };
