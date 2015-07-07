@@ -1,0 +1,252 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!-- BEGIN HEADER -->
+<html lang="en">
+  <meta charset="utf-8">
+  <title>Frencil's Corner ~ How I've Learned To Hire Developers - Part II; The Tiered Interview ~ 2015-07-08</title>
+  <script type="text/javascript">
+  /************************************************************
+     ____                _ ___        _____                    
+    / _________ ___ ____(_/ ( )___   / ______  _______ ___ ____
+   / _// __/ -_/ _ / __/ / /|/(_-<  / /__/ _ \/ __/ _ / -_/ __/
+  /_/ /_/  \__/_//_\__/_/_/  /___/  \___/\___/_/ /_//_\__/_/
+  =============================================================
+  If you must know the significance of the name:
+  VmcnZiBhYmcgaXJlbCB2YWdyZXJmZ3ZhdC4gUmZmcmFndm55eWwgUHVldmYgU
+  HluZXggdmYgbmEgcmtnZXJ6cnlsIHBienpiYSBhbnpyIGZiIHpuYWwgbHJuZW
+  YgbnRiIFYgYXJycXJxIG5hIHZhZ3JlYXJnIGNmcmhxYmFseiBnYiB1bmlyIGZ
+  ienIgZnJ6b3luYXByIGJzIGhhdmRocmFyZmYgbmFxIHF2ZnBiaXJlbm92eXZn
+  bC4gU2VyYXB2eSBqbmYgbiB6YmVyIGJlIHlyZmYgZW5hcWJ6IGpiZXEgcGJ6b
+  3ZhdmF0IGN1YmFyenJmIGd1bmcgViB5dnhycSBzYmUganVuZ3JpcmUgZXJuZm
+  JhLCBuYXEgdmcgZmdocHguIEd1bmcnZiB2ZyE=
+  ************************************************************/
+  </script>                                                             
+  <meta name="author" content="Christopher Clark">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/skeleton.css">
+  <link rel="stylesheet" href="css/squiggle.css">
+  <link rel="stylesheet" href="css/docco.css">
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <script type="text/javascript" src="js/posts.js"></script>
+  <script type="text/javascript" src="js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body>
+
+  <div class="container">
+    <div class="row">
+      <div class="ten columns">
+        <h1><a href="../index.html">Frencil's Corner</a></h1>
+        <div class="subtitle">Frencil is Christopher Clark, a guy who likes science, math, and programming.</div>
+      </div>
+      <div class="two columns unicodes">
+        <h1>&#9732;</h1>
+        <div class="subtitle">&#9883;</div>
+      </div>
+    </div>
+    <div class="row">
+      <hr>
+    </div>
+
+    <div class="row">
+      <div class="nine columns">
+<!-- END HEADER -->
+
+    <style>
+    table.applicants td {
+      padding-left: 6px;
+      padding-right: 6px;
+    }
+    table.applicants tr.rejected {
+      background-color: #D9A29A;
+    }
+    table.applicants tr.applied {
+      background-color: #D9D39A;
+    }
+    table.applicants tr.invited {
+      font-weight: bold;
+      background-color: #9AD99C;
+    }
+    </style>
+  
+    <!-- 2015-07-08 -->
+    <a name="2015-06-25"></a>
+    <h2>How I've Learned To Hire Developers - Part II; The Tiered Interview ~ <span class="date">2015-07-08</span></h2>
+
+    <div class="row">
+      <div class="four columns">
+        <p>Continuing this three-part piece on hiring developers today I want to dive into the meat of the process: interviewing. If you're just stumbling upon this article please consider checking out <a href="../archives/20150625.html">Part I; Getting Started</a> for my take on all the prep work and planning that should happen before any interviewing starts.</p>
+        <p>Now then, onto interviews...</p>
+      </div>
+      <div class="eight columns contents">
+        <h5>Article Contents</h5>
+        <ul class="contents">
+          <li><a href="#first_contact">First Contact</a></li>
+          <li><a href="#tier_1_the_phone_screen">Tier 1: The Phone Screen</a></li>
+          <li><a href="#tier_2_homework">Tier 2: Homework</a></li>
+          <li><a href="#tier_3_the_face_to_face">Tier 3: The Face-to-Face</a></li>
+          <li><a href="#graceful_rejections">Graceful Rejections</a></li>
+          <li><a href="#the_final_negotiation">The Final Negotiation</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <a name="first_contact"></a>
+    <h5>First Contact</h5>
+    <p>Okay, so you've got applications piling up. How do you know to whom to reach out for an interview, and how quickly do you respond?</p>
+    <figure>
+      <a href="img/first_contact.jpg"><img src="img/first_contact.jpg"></a>
+      <figcaption>Zefram Cochrane makes first contact with an alien. This somehow has to do with hiring developers.</figcaption>
+    </figure>
+    <p>Some conventional wisdom says it's okay to let applications stream in for a while, but this is neglectful of your applicants and risky. <b>Truly excellent applicants may be off the hiring market in less than two weeks</b>. Chances are if a candidate has applied to your position they've also applied to several others. They may even be somewhat far along in the interview process with another employer and nearing an offer. If they're knocking on your door, and they look like a good fit on paper, why wait to talk to them? Get on it! There's an added bonus here that when an applicant hears back quickly it makes you, as an employer, look like you're both organized and invested in them as a candidate. All good things.</p>
+    <p>As for what to look for in an application: that's tricky. Since development work requires a level of attention to detail such that a single misplaced character can break an application it's perfectly reasonable to marginalize or reject candidates whose applications are riddled with spelling and grammatical errors. Candidates who have a poor grasp of how to present their skills and experience effectively in a clean document with good use of white space are also perfectly valid to write off. Geographic location isn't a protected class, so if you're only interested in candidates that don't need to relocate that's your prerogative.</p>
+    <p>For a skills match I recommend retaining as much control over the screen as possible. Non-technical folks, usually those from Human Resources, might play a keyword-matching game that will likely weed out some of your best candidates. See Jason Bock's <a href="http://www.jasonbock.net/jb/News/Item/7c334037d1a9437d9fa6506e2f35eaac">If Carpenters Were Hired Like Programmers</a>. You should be savvy enough to know that a candidate who knows a heaping pile of languages, many being object oriented, scripted, or both, will be able to pick up javascript quite fast despite that keyword not appearing on their resume. Think critically about what your applicants have done and how that might translate into what they <i>can</i> do, and embrace the two critical notions that:</p>
+    <ol>
+      <li>No candidate will have the panacea of skills you're looking for</li>
+      <li>Both you and your new employee will want the job to be challenging, and that means leaving room to learn some new things on the job</li>
+    </ol>
+    <p>So, general rules for selecting candidates to interview:</p>
+    <ul style="font-weight: bold;">
+      <li>Be strict in terms of written communication quality (application legibility, spelling, etc.)</li>
+      <li>Be lenient in terms of existing skills (incomplete overlap is a best-case scenario)</li>
+      <li>If an applicant looks good contact them <i>immediately</i></li>
+    </ul>
+
+    <a name="tier_1_the_phone_screen"></a>
+    <h5>Tier 1: The Phone Screen</h5>
+    <p><b>No matter how great an applicant looks on paper <i>never</i> start things off with a face-to-face interview.</b> The worst feeling in the world is talking to an applicant for two minutes in person and realizing they're not a good fit. They came all the way out to see you, and you don't want to rudely cut off the interview that short, so you agonizingly stretch it out and waste everyone's time. I've been there, it sucks, and it can be easily avoided with a graded (or tiered) interview process.</p>
+    <p>The first tier is the phone screen. When I reach out to applicants this is what I'm setting up. Initial phone screens can be lightly or heavily structured but at the very least should be time-limited (to respect the schedules of all parties on the call). Here's the general structure of my initial phone screens:</p>
+    <ul>
+      <li>Limited to 30 minutes (explicitly stated, leniently followed)</li>
+      <li>The first ten minutes are for me to ask general questions about skills and experience</li>
+      <li>The second ten minutes involves a brief scripted technical assessment</li>
+      <li>The final ten minutes allows the applicant to ask any questions they may have</li>
+    </ul>
+    <p>This simple approach crams a <i>lot</i> of information bandwidth into a short time frame. Remember that applicants are interviewing you as much as you're interviewing them, and certainly for the best applicants out there, you may be directly competing with other employers for one person's time and talent. Information bandwidth in conversations is important to max out because information should be flowing both ways. You want your applicants learning as much about you in these conversations as you are about them.</p>
+    <p>As to that time limit, I say <i>explicitly stated, leniently followed</i> because the applicant should know up front how much time they should set aside and provide you an out to cut it off at a half hour if it's obvious there's no reason to continue. However sometimes the conversation is <i>really</i> constructive so it's perfectly fine to let it stretch a bit to 45 minutes or so. Just don't let it stretch too long and <b>remember it's <i>your</i> responsibility as the interviewer to keep things moving.</b></p>
+    <p>The scripted technical assessment is a rather tricky thing to get right. For this I like to keep a document that may change between hiring stretches but be applied consistently during the course of a single hiring phase. Questions should be quick to answer but not be "gotchas". This, again, is difficult to dial in but in general I look for aspects of our toolchain that are pretty basic or universal with unambiguous descriptions or answers. My script evolved some over the years but here's a sampling of what's been on there lately:</p>
+    <div class="contents" style="padding-top: 1em;">
+    <ol>
+      <li>What does it mean for a programming language to be strictly or loosely typed?</li>
+      <li>Can you describe how a SQL Injection Attack works and how to protect against it?</li>
+      <li>Can you give an example of a many-to-many relationship and how you might model it in a relational database?</li>
+      <li>Can you describe a safe method for storing passwords in a database?</li>
+      <li>In an object oriented language can you describe the difference between class variables that are static, public, protected, and private?</li>
+    </ol>
+    </div><br>
+    <p>My script will usually have more questions than I can ask or have answered in ten minutes just in case an applicant is really on their game and flies through them. I also try to cover a lot of areas&mdash;the example above touches on comparative programming languages, web vulnerabilities, object oriented programming, and relational databases. This also affords some flexibility if a candidate is just bombing one section (something that is not necessarily outright grounds for rejection).</p>
+    <p>As you listen to a candidate work through their answers it should become apparent where their strengths and weaknesses with respect to the subject matter lies. and I'd recommend cherry picking questions from the script that play to their strengths. <b>Don't be the interviewer who tries to stump your candidates.</b> This makes you look like a petty jerk who wants to just feel smart. It works against well-qualified applicants that may just be blanking or nervous from the prospect of interviewing. Root for your candidates and go out of your way to feed them problems/questions at which they're likely to succeed but are nonetheless challenging. This will tell you far more about your candidates than forcing them to stumble through an area they've already demonstrated limited knowledge thereof.</p>
+    <figure>
+      <a href="i_am_so_smrt.jpg"><img src="img/i_am_so_smrt.jpg"></a>
+      <figcaption>"I am so smart" sang Homer after burning his high school diploma. Trying to stump candidates for your own satisfaction is just as effective&mdash;you may as well set fire to your applicant list.</figcaption>
+    </figure>
+    <p>While this method for a phone screen provides plenty of opportunities for efficiently collecting subjective and objective assessments of a candidate's fit it also provides opportunities for red flags to come up. Certainly if a candidate bombs several of the technical questions or worse&mdash;makes up bullshit answers&mdash;they can be pretty swiftly rejected. But perhaps more important is the final third of the phone screen where applicants ask questions. <b>If a candidate has no questions to ask, or asks nothing of substance, consider this a massive warning.</b> Good candidates will be interested in all sorts of nuanced aspects of the dev shop and the company, so no questions or questions solely about salary and benefits may point to an applicant that's not invested in the work. To them it may just be a job, and that may singal an early departure, lackluster work, or all kinds of other problems down the line.</p>
+    <p>When it comes time to close things I usually tell an applicant I'll be in touch within the next few days and then follow up on that expectation with religious conviction. If an applicant is particularly good or bad it may be a time saver for all involved to invite them to the next tier or reject them over the phone, but those are extreme cases. Usually I'll try to have a follow-up email sent out the next business day, no matter what.</p>
+
+    <a name="tier_2_homework"></a>
+    <h5>Tier 2: Homework</h5>
+    <p>...</p>
+
+    <a name="tier_3_the_face_to_face"></a>
+    <h5>Tier 3: The Face-to-Face</h5>
+    <p>...</p>
+
+    <a name="graceful_rejections"></a>
+    <h5>Graceful Rejections</h5>
+    <p>...</p>
+
+    <a name="the_final_negotiation"></a>
+    <h5>The Final Negotiation</h5>
+    <p>...</p>
+  
+    <div class="subtitle">
+      --<br>
+      <br>
+      Christopher Clark<br>
+      2015-06-25
+    </div>
+
+    <br><hr><br>
+
+    <div id="nav_posts">
+      <div id="nav_posts_prev"></div>
+      <div id="nav_posts_next"></div>
+    </div>
+
+    <br><br>
+
+<!-- BEGIN FOOTER -->
+        <div class="copyright">Copyright © Christopher Clark (Frencil) 2015.</div>
+      </div>
+      
+      <div class="three columns sidelinks">
+        
+        <h5><a href="../index.html">Latest Post</a></h5>
+        <h5><a href="../archives/index.html">Archives</a></h5>
+        
+        <hr>
+
+        <h5>Dossier</h5>
+        twitter: <a href="https://twitter.com/frencil">@Frencil</a>
+        <br>
+        github: <a href="https://github.com/Frencil">Frencil</a>
+        <br>
+        linkedin: <a href="https://www.linkedin.com/in/frencil">Frencil</a>
+        <br>
+        youtube: <a href="https://www.youtube.com/user/frencilsf/videos">FrencilSF</a>
+        <br><br>
+        <a href="../resume.html">Résumé</a>
+        <br>
+        <hr>
+        
+        <h5>Projects</h5>
+        <section class="project">
+          <a href="http://nuclides.org"><img src="img/icon_nuclides.png" width="16" height="16"> Nuclides.org</a><br>
+          <div class="blurb">Explore the elements and their isotopes with interactive d3.js</div>
+        </section>
+        <section class="project">
+          <a href="http://eclipsetracks.org"><img src="img/icon_eclipsetracks.png" width="16" height="16"> EclipseTracks.org</a><br>
+          <div class="blurb">Explore solar eclipse predictions on a 3D WebGL globe</div>
+        </section>
+        <section class="project">
+          <a href="https://familygiftregistry.net"><img src="img/icon_fgr.png" width="16" height="16"> FamilyGiftRegistry.net</a><br>
+          <div class="blurb">Free private gift registry / wish list system for families</div>
+        </section>
+
+        <h5>Other Writing</h5>
+        <section class="project">
+          <a href="https://www.sparkfun.com/users/18803#news">SparkFun.com Articles</a>
+        </section>
+        <section class="project">
+          <a href="http://opensource.com/users/frencil">OpenSource.com Articles</a>
+        </section>
+        <section class="project">
+          <a href="https://prezi.com/user/Frencil/">Prezi Presentations</a>
+        </section>          
+      </div>
+    </div>
+  </div>
+
+  <iframe id="raw_posts" src="../posts.txt" onload="render.loadPosts('nav');" style="display: none;"></iframe>
+
+  <!-- Piwik -->
+  <script type="text/javascript">
+  var _paq = _paq || [];
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u=(("https:" == document.location.protocol) ? "https" : "http") + "://www.familygiftregistry.net/analytics/piwik/";
+    _paq.push(['setTrackerUrl', u+'piwik.php']);
+    _paq.push(['setSiteId', 4]);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0]; g.type='text/javascript';
+    g.defer=true; g.async=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+  })();
+  </script>
+  <noscript><p><img src="http://www.familygiftregistry.net/analytics/piwik/piwik.php?idsite=4" style="border:0;" alt="" /></p></noscript>
+  <!-- End Piwik Code -->
+  
+</body>
+
+</html>
+<!-- END FOOTER -->
