@@ -145,6 +145,14 @@ div.contents h5 {
   margin-bottom: 0.5rem;
 }
 
+div.well {
+  background: #f1f1f1;
+  border: 1px solid #e1e1e1;
+  border-radius: 4px;
+  padding: .8rem;
+  margin-bottom: 2.5rem;
+}
+
 div.resume h1 { 
   font-weight: bold;
   font-variant: small-caps;

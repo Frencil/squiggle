@@ -10,3 +10,4 @@
 2015-05-01:Animated Orbiting Particles in d3
 2015-05-31:Server-Side Javascript Files as Pages with HTML5 pushState
 2015-06-25:How I've Learned To Hire Developers - Part I; Getting Started
+2015-07-08:How I've Learned To Hire Developers - Part II; The Tiered Interview
