@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import re, csv, datetime, fileinput, traceback
 
 with open('includes/header.html', 'r') as headerfile:
