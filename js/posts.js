@@ -42,8 +42,10 @@ var render = {
       var limit = Math.min(this.posts.length, 4);
       for (var i = this.posts.length - 2; i > this.posts.length - limit - 2; i--) {
         var post = this.posts[i];
-        document.getElementById("recent_posts").innerHTML += "<h4><span class=\"date\">" + post.date + ":</span> "
-                                                          +  "<a href=\"archives/" + post.url + "\">" + post.title + "</a></h4>\n";
+        document.getElementById("recent_posts").innerHTML += "<h4>"
+          + "<div><a href=\"archives/" + post.url + "\">" + post.title + "</a></div>"
+          + "<div class=\"date\">" + post.date + "</div>"
+          + "</h4>\n";
       }
     }
   },
@@ -60,8 +62,12 @@ var render = {
           current_year = year;
           document.getElementById("archives").innerHTML += "<h2>Archives - " + current_year + "</h2>\n";
         }
-        document.getElementById("archives").innerHTML += "<h4><span class=\"date\">" + post.date + ":</span> "
-                                                      +  "<a href=\"" + post.url + "\">" + post.title + "</a></h4>\n";
+        document.getElementById("archives").innerHTML += "<h4>"
+          + "<div><a href=\"archives/" + post.url + "\">" + post.title + "</a></div>"
+          + "<div class=\"date\">" + post.date + "</div>"
+          + "</h4>\n"; 
+        //document.getElementById("archives").innerHTML += "<h4><span class=\"date\">" + post.date + ":</span> "
+        //                                              +  "<a href=\"" + post.url + "\">" + post.title + "</a></h4>\n";
       }
     }
   },
