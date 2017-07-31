@@ -63,11 +63,9 @@ var render = {
           document.getElementById("archives").innerHTML += "<h2>Archives - " + current_year + "</h2>\n";
         }
         document.getElementById("archives").innerHTML += "<h4>"
-          + "<div><a href=\"archives/" + post.url + "\">" + post.title + "</a></div>"
+          + "<div><a href=\"" + post.url + "\">" + post.title + "</a></div>"
           + "<div class=\"date\">" + post.date + "</div>"
           + "</h4>\n"; 
-        //document.getElementById("archives").innerHTML += "<h4><span class=\"date\">" + post.date + ":</span> "
-        //                                              +  "<a href=\"" + post.url + "\">" + post.title + "</a></h4>\n";
       }
     }
   },
