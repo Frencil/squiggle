@@ -1,0 +1,25 @@
+# Clean URLs: hide ".html" extensions and "index.html" filenames.
+#
+#   /archives/20190505.html  -> 301 -> /archives/20190505
+#   /archives/index.html     -> 301 -> /archives/
+#   /archives/20190505       -> served from /archives/20190505.html
+#
+# Paths are taken from the raw request line, so the same rules work whether
+# the site lives at the domain root (production) or under /squiggle/ (local).
+# Requires mod_rewrite and "AllowOverride FileInfo" (or All) for this directory.
+
+RewriteEngine On
+
+# 1. Redirect explicit requests for .../index.html to the bare directory.
+RewriteCond %{THE_REQUEST} ^[A-Z]+\s/((?:[^?\s]*/)?)index\.html[?\s]
+RewriteRule ^ /%1 [R=301,NE,L]
+
+# 2. Redirect explicit requests for .../page.html to .../page.
+RewriteCond %{THE_REQUEST} ^[A-Z]+\s/([^?\s]+)\.html[?\s]
+RewriteRule ^ /%1 [R=301,NE,L]
+
+# 3. Internally serve .../page from .../page.html when that file exists.
+#    (THE_REQUEST is unchanged by this rewrite, so rules 1-2 don't loop.)
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.html -f
+RewriteRule ^(.+)$ $1.html [L]

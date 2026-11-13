@@ -20,7 +20,7 @@ var render = {
       var date  = parts.shift();
       var title = parts.join(":");
       var date2 = date.replace(/-/g,"");
-      var url   = date2 + ".html";
+      var url   = date2;
       var post  = { date: date, title: title, url: url };
       this.posts.push(post);
       if (date2 == this.current_url_date) {

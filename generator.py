@@ -12,12 +12,12 @@ def respliceHeaderFooter(filename, title='', depth='', loadposts=''):
 
     global header
     use_header = header
-    for i, j in ('{$DEPTH}', depth), ('{$TITLE}', title):
+    for i, j in ('{$DEPTH}', depth), ('{$HOME}', depth or './'), ('{$TITLE}', title):
         use_header = use_header.replace(i, j)
 
     global footer
     use_footer = footer
-    for i, j in ('{$DEPTH}', depth), ('{$LOADPOSTS}', loadposts):
+    for i, j in ('{$DEPTH}', depth), ('{$HOME}', depth or './'), ('{$LOADPOSTS}', loadposts):
         use_footer = use_footer.replace(i, j)
 
     doctype = True
@@ -80,6 +80,7 @@ def respliceHeaderFooter(filename, title='', depth='', loadposts=''):
 # Apply header and footer to distinct pages
 respliceHeaderFooter('index.html', 'Home', '', 'recent')
 respliceHeaderFooter('archives/index.html', 'Archives', '../', 'archives')
+respliceHeaderFooter('writing/sparkfun.html', 'SparkFun.com Articles', '../', 'none')
 
 # Apply header and footer to archived posts
 with open("posts.txt", "r") as events:
