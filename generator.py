@@ -77,28 +77,95 @@ def respliceHeaderFooter(filename, title='', depth='', loadposts=''):
 
     print("Wrote " + filename + " :: " + title)
 
+# Folders symlinked inside archives/ (archives/img -> ../img, etc.), so paths
+# into them resolve the same from archives/ and from the site root.
+SHARED_DIRS = ('img', 'css', 'js')
+
+def rebaseArchiveUrl(url):
+    """Rewrite a URL written relative to archives/ so it works from the site root."""
+    if (not url or url.startswith(('#', '/', '?', '{'))
+            or re.match(r'^[a-zA-Z][a-zA-Z0-9+.-]*:', url)):  # http:, mailto:, javascript:, ...
+        return url
+    if url.startswith('../'):
+        return url[3:] or './'
+    if url.startswith('./'):
+        url = url[2:]
+    if url.split('/')[0] in SHARED_DIRS:
+        return url
+    return 'archives/' + url
+
+def rebaseArchiveHtml(html):
+    """Apply rebaseArchiveUrl to every href/src/poster attribute and CSS url()."""
+    html = re.sub(r'''(\b(?:href|src|poster)\s*=\s*)(["'])(.*?)\2''',
+                  lambda m: m.group(1) + m.group(2) + rebaseArchiveUrl(m.group(3)) + m.group(2),
+                  html, flags=re.I | re.S)
+    html = re.sub(r'''(url\(\s*)(["']?)([^)"']*)\2(\s*\))''',
+                  lambda m: m.group(1) + m.group(2) + rebaseArchiveUrl(m.group(3)) + m.group(2) + m.group(4),
+                  html, flags=re.I)
+    return html
+
+def findDivBlock(html, opening):
+    """Return (start, end) of the div that begins with `opening`, honoring nested divs."""
+    start = html.find(opening)
+    if start == -1:
+        return None
+    depth = 0
+    for m in re.finditer(r'<div\b|</div\s*>', html[start:], flags=re.I):
+        depth += -1 if m.group(0).startswith('</') else 1
+        if depth == 0:
+            return start, start + m.end()
+    return None
+
+def buildHomePage(latest_filename):
+    """Copy the latest post's body into index.html, swapping post nav for Recent Posts."""
+    with open(latest_filename, 'r') as f:
+        post = f.read()
+    try:
+        body = post.split('<!-- END HEADER -->\n', 1)[1].split('<!-- BEGIN FOOTER -->', 1)[0]
+    except IndexError:
+        raise Exception(latest_filename + ': header/footer markers not found')
+
+    nav = findDivBlock(body, '<div id="nav_posts">')
+    if nav is None:
+        raise Exception(latest_filename + ': <div id="nav_posts"> block not found')
+    recent = '<h3>Recent Posts</h3>\n    <div id="recent_posts"></div>'
+    body = body[:nav[0]] + recent + body[nav[1]:]
+    body = rebaseArchiveHtml(body)
+
+    # Header/footer content is filled in by respliceHeaderFooter afterwards
+    with open('index.html', 'w') as f:
+        f.write('<!DOCTYPE html>\n<!-- BEGIN HEADER -->\n<!-- END HEADER -->\n'
+                + body + '<!-- BEGIN FOOTER -->\n<!-- END FOOTER -->\n')
+    print("Built index.html from " + latest_filename)
+
+def archiveFilename(date):
+    return 'archives/' + date.strftime("%Y%m%d") + '.html'
+
+# Read the post list
+posts = []
+with open("posts.txt", "r") as events:
+    for row in csv.reader(events, delimiter=':'):
+        if not row:
+            continue
+        try:
+            posts.append((datetime.datetime.strptime(row[0], "%Y-%m-%d").date(), row[1]))
+        except Exception:
+            print("Error on ISO: " + row[0])
+            traceback.print_exc()
+
+# Home page shows the most recent post
+buildHomePage(archiveFilename(max(posts)[0]))
+
 # Apply header and footer to distinct pages
 respliceHeaderFooter('index.html', 'Home', '', 'recent')
 respliceHeaderFooter('archives/index.html', 'Archives', '../', 'archives')
 respliceHeaderFooter('writing/sparkfun.html', 'SparkFun.com Articles', '../', 'none')
 
 # Apply header and footer to archived posts
-with open("posts.txt", "r") as events:
-    reader = csv.reader(events, delimiter=':')
-    for row in reader:
-
-        iso = row[0]
-        title = row[1]
-
-        try:
-            date = datetime.datetime.strptime(iso, "%Y-%m-%d").date()
-            filename = 'archives/' + date.strftime("%Y%m%d") + '.html'
-            htmltitle = title + ' ~ ' + date.strftime("%Y-%m-%d")
-            respliceHeaderFooter(filename, htmltitle, '../', 'nav')         
-
-        except Exception:
-            print("Error on ISO: " + iso)
-            traceback.print_exc()
-            continue
-
-    
+for date, title in posts:
+    filename = archiveFilename(date)
+    try:
+        respliceHeaderFooter(filename, title + ' ~ ' + date.strftime("%Y-%m-%d"), '../', 'nav')
+    except Exception:
+        print("Error on " + filename)
+        traceback.print_exc()
