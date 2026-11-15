@@ -26,6 +26,9 @@
   <link rel="stylesheet" href="css/skeleton.css">
   <link rel="stylesheet" href="css/squiggle.css">
   <link rel="stylesheet" href="css/docco.css">
+  <link rel="stylesheet" href="css/theme-light.css" id="theme_light">
+  <link rel="stylesheet" href="css/theme-dark.css" id="theme_dark" media="not all">
+  <script type="text/javascript" src="js/theme.js"></script>
   <link rel="icon" type="image/png" href="{$DEPTH}favicon.png">
   <script type="text/javascript" src="js/posts.js"></script>
   <script type="text/javascript" src="js/highlight.pack.js"></script>
@@ -40,7 +43,7 @@
         <div class="subtitle">Frencil is Christoph Clark, a guy who likes science, math, and programming.</div>
       </div>
       <div class="two columns unicodes">
-        <h1>&#9732;</h1>
+        <h1><a href="#" id="theme_toggle" role="button" title="Switch to dark mode" aria-label="Switch to dark mode" onclick="return theme.toggle();">&#9788;</a></h1>
         <div class="subtitle">&#9883;</div>
       </div>
     </div>

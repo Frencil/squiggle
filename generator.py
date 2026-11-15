@@ -1,9 +1,21 @@
 #!/usr/bin/python
 
-import re, csv, datetime, fileinput, traceback
+import re, csv, datetime, fileinput, traceback, hashlib, os
+
+def cacheBust(html):
+    """Append ?v=<content hash> to local css/ and js/ URLs so browsers fetch a
+    file again whenever its content changes (and only then)."""
+    def addVersion(m):
+        path = m.group(3)
+        if not os.path.isfile(path):
+            return m.group(0)
+        with open(path, 'rb') as f:
+            version = hashlib.md5(f.read()).hexdigest()[:8]
+        return m.group(1) + m.group(2) + path + '?v=' + version + m.group(2)
+    return re.sub(r'''(\b(?:href|src)=)(["'])((?:css|js)/[^"'?#]+)\2''', addVersion, html)
 
 with open('includes/header.html', 'r') as headerfile:
-    header = headerfile.read()
+    header = cacheBust(headerfile.read())
 
 with open('includes/footer.html', 'r') as footerfile:
     footer = footerfile.read()

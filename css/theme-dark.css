@@ -1,0 +1,60 @@
+/* Dark theme. Colors only; layout lives in squiggle.css.
+   Mirrors theme-light.css, plus overrides for skeleton.css and docco.css
+   (which only ship light colors). */
+
+body {
+  color: #d4d8da;
+  background-color: rgb(17, 19, 21);
+  background-image: -webkit-linear-gradient(rgb(32, 36, 39), rgb(17, 19, 21));
+  background-image: -o-linear-gradient(rgb(32, 36, 39), rgb(17, 19, 21));
+  background-image: -moz-linear-gradient(rgb(32, 36, 39), rgb(17, 19, 21));
+  background-image: linear-gradient(rgb(32, 36, 39), rgb(17, 19, 21));
+}
+
+.subtitle { color: rgb(150, 158, 161); }
+p ul li { color: rgb(150, 158, 161); }
+
+a { color: rgb(94, 176, 198); }
+a:hover { color: rgb(130, 206, 228); }
+
+.date { color: rgba(150, 158, 161, 0.85); }
+figcaption { color: rgb(176, 182, 184); }
+section.project div.blurb { color: rgba(150, 158, 161, 0.85); }
+div.copyright { color: rgba(150, 158, 161, 0.85); }
+
+div.contents { background: #24292c; border: 1px solid #353c40; }
+div.well { background: #24292c; border: 1px solid #353c40; }
+div.alert { background: #4a4224; border: 1px solid #5e5530; }
+
+div.resume h1, div.resume h2, div.resume h3 { color: rgb(120, 178, 194); }
+div.resume h3 span.sub { color: rgba(150, 158, 161, 0.85); }
+
+/* skeleton.css overrides */
+hr { border-top-color: #353c40; }
+code { background: #24292c; border-color: #353c40; }
+th, td { border-bottom-color: #353c40; }
+
+/* docco.css (highlight.js) overrides */
+.hljs { color: #d4d8da; }
+.hljs-comment, .diff .hljs-header, .hljs-javadoc { color: #7fb3b3; }
+.hljs-keyword, .assignment, .hljs-literal, .css .rule .hljs-keyword, .hljs-winutils,
+.javascript .hljs-title, .lisp .hljs-title, .hljs-subst { color: #e0956f; }
+.hljs-number, .hljs-hexcolor { color: #7fd1a8; }
+.hljs-string, .hljs-tag .hljs-value, .hljs-phpdoc, .hljs-dartdoc,
+.tex .hljs-formula, .hljs-name { color: #6fcf97; }
+.hljs-title, .hljs-id { color: #8fb2f0; }
+.hljs-params { color: #9db4ff; }
+.hljs-class .hljs-title, .haskell .hljs-label, .tex .hljs-command, .hljs-class { color: #a3b3d6; }
+.hljs-tag, .hljs-tag .hljs-title, .hljs-rule .hljs-property,
+.django .hljs-tag .hljs-keyword { color: #9aa8f0; }
+.hljs-attribute, .hljs-variable, .instancevar, .lisp .hljs-body { color: #5fcfcf; }
+.hljs-regexp { color: #e39ac0; }
+.hljs-symbol, .ruby .hljs-symbol .hljs-string, .ruby .hljs-symbol .hljs-keyword,
+.ruby .hljs-symbol .keymethods, .lisp .hljs-keyword, .tex .hljs-special,
+.input_number { color: #e07fbf; }
+.builtin, .constructor, .hljs-built_in { color: #5fc4e8; }
+.hljs-preprocessor, .hljs-pragma, .hljs-pi, .hljs-doctype, .hljs-shebang,
+.hljs-cdata { color: #8a9296; }
+.hljs-deletion { background: #4a2a2a; }
+.hljs-addition { background: #26402c; }
+.hljs-chunk { color: #8a9296; }

@@ -24,13 +24,16 @@
   <meta name="author" content="Christoph Clark">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
-  <link rel="stylesheet" href="css/normalize.css">
-  <link rel="stylesheet" href="css/skeleton.css">
-  <link rel="stylesheet" href="css/squiggle.css">
-  <link rel="stylesheet" href="css/docco.css">
+  <link rel="stylesheet" href="css/normalize.css?v=4555077d">
+  <link rel="stylesheet" href="css/skeleton.css?v=cd542f65">
+  <link rel="stylesheet" href="css/squiggle.css?v=052e6a85">
+  <link rel="stylesheet" href="css/docco.css?v=cc94c6e5">
+  <link rel="stylesheet" href="css/theme-light.css?v=2431af41" id="theme_light">
+  <link rel="stylesheet" href="css/theme-dark.css?v=9c61155a" id="theme_dark" media="not all">
+  <script type="text/javascript" src="js/theme.js?v=dbb88706"></script>
   <link rel="icon" type="image/png" href="../favicon.png">
-  <script type="text/javascript" src="js/posts.js"></script>
-  <script type="text/javascript" src="js/highlight.pack.js"></script>
+  <script type="text/javascript" src="js/posts.js?v=01aeed2e"></script>
+  <script type="text/javascript" src="js/highlight.pack.js?v=08557fff"></script>
   <script>hljs.initHighlightingOnLoad();</script>
 </head>
 <body>
@@ -42,7 +45,7 @@
         <div class="subtitle">Frencil is Christoph Clark, a guy who likes science, math, and programming.</div>
       </div>
       <div class="two columns unicodes">
-        <h1>&#9732;</h1>
+        <h1><a href="#" id="theme_toggle" role="button" title="Switch to dark mode" aria-label="Switch to dark mode" onclick="return theme.toggle();">&#9788;</a></h1>
         <div class="subtitle">&#9883;</div>
       </div>
     </div>
@@ -75,7 +78,9 @@
     <h5>Shoot manual and drag the shutter</h5>
     <p>First off, <strong>always shoot in manual mode when time lapsing</strong>. Aperture priority will adjust exposure times with every shot and generate an undesirable flicker effect in the final video. When shooting manually and with a cable release it's possible to add motion blur to the final video using a technique called <strong>dragging the shutter</strong>. Essentially all this entails is doing a longer exposure relative to the shot interval, so if a shot interval is once every ten seconds, doing five second exposures will generate a fluid blurring in the final video.</p>
     <figure>
-      <a href="img/time_lapse_shutter_drag.png"><img src="img/time_lapse_shutter_drag.png"></a>
+      <a href="img/time_lapse_shutter_drag.png">
+        <img src="img/time_lapse_shutter_drag.png" style="background-color: #AAAAAA; border: 1px solid #555555;">
+      </a>
       <figcaption>How exposure time relative to shot interval determines the amount of motion blur in a time lapse video. [Image credit: <a href="http://www.learntimelapse.com/time-lapse-exposure-avoiding-flicker-and-dragging-shutter/">learntimelapse.com</a>] <a href="img/time_lapse_shutter_drag.png">(click for full size)</a></figcaption>
     </figure>
     <p>Doing a five second exposure, however, may be near impossible without drastically overexposing every shot. Something to cut down light levels is necessary and this is where ND filters are an essential tool in the toolbox. One can also opt for a tighter aperture (higher f-stop) and a lower ISO to cut light levels and exposure further and allow for longer exposures, but especially in daylight conditions a multi-second exposure can usually only be achieved with an ND filter. When using ND filters in bright light situations be sure to always test and examine exposures before setting a time lapse running. I've found that moderate quality variable ND filters can create uneven shadow patterns when turned up near their maximum, and this can easily be spotted in a test exposure.</p>

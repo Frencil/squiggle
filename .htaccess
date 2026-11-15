@@ -23,3 +23,16 @@ RewriteRule ^ /%1 [R=301,NE,L]
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}.html -f
 RewriteRule ^(.+)$ $1.html [L]
+
+# Caching: make browsers revalidate pages (and the post list) on every visit.
+# Without a Cache-Control header browsers guess a freshness lifetime from
+# Last-Modified and can keep serving a stale page for hours or days. With
+# "no-cache" they still cache, but check first (a cheap 304 when unchanged).
+# CSS/JS don't need this: generator.py adds ?v=<content hash> to those URLs, so
+# a changed file gets a new URL.
+# Requires mod_headers ("sudo a2enmod headers" locally); skipped if absent.
+<IfModule mod_headers.c>
+  <FilesMatch "\.(html|txt)$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+</IfModule>
