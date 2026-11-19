@@ -1,0 +1,27 @@
+/* Light theme (default). Colors only; layout lives in squiggle.css.
+   Keep the selectors in sync with theme-dark.css. */
+
+body {
+  background-image: -webkit-linear-gradient(rgb(253, 254, 255), rgb(232, 238, 240));
+  background-image: -o-linear-gradient(rgb(253, 254, 255), rgb(232, 238, 240));
+  background-image: -moz-linear-gradient(rgb(253, 254, 255), rgb(232, 238, 240));
+  background-image: linear-gradient(rgb(253, 254, 255), rgb(232, 238, 240));
+}
+
+.subtitle { color: rgb(113, 119, 121); }
+p ul li { color: rgb(113, 119, 121); }
+
+a { color: rgb(71, 140, 158); }
+a:hover { color: rgb(15, 152, 189); }
+
+.date { color: rgba(107, 113, 115, 0.8); }
+figcaption { color: rgb(76, 80, 82); }
+section.project div.blurb { color: rgba(107, 113, 115, 0.8); }
+div.copyright { color: rgba(107, 113, 115, 0.8); }
+
+div.contents { background: #f1f1f1; border: 1px solid #e1e1e1; }
+div.well { background: #f1f1f1; border: 1px solid #e1e1e1; }
+div.alert { background: #f6efcb; border: 1px solid #e1e1e1; }
+
+div.resume h1, div.resume h2, div.resume h3 { color: rgb(46, 90, 102); }
+div.resume h3 span.sub { color: rgba(107, 113, 115, 0.8); }

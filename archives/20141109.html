@@ -24,13 +24,16 @@
   <meta name="author" content="Christoph Clark">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
-  <link rel="stylesheet" href="css/normalize.css">
-  <link rel="stylesheet" href="css/skeleton.css">
-  <link rel="stylesheet" href="css/squiggle.css">
-  <link rel="stylesheet" href="css/docco.css">
+  <link rel="stylesheet" href="css/normalize.css?v=4555077d">
+  <link rel="stylesheet" href="css/skeleton.css?v=cd542f65">
+  <link rel="stylesheet" href="css/squiggle.css?v=052e6a85">
+  <link rel="stylesheet" href="css/docco.css?v=cc94c6e5">
+  <link rel="stylesheet" href="css/theme-light.css?v=2431af41" id="theme_light">
+  <link rel="stylesheet" href="css/theme-dark.css?v=9c61155a" id="theme_dark" media="not all">
+  <script type="text/javascript" src="js/theme.js?v=1a4b2bf1"></script>
   <link rel="icon" type="image/png" href="../favicon.png">
-  <script type="text/javascript" src="js/posts.js"></script>
-  <script type="text/javascript" src="js/highlight.pack.js"></script>
+  <script type="text/javascript" src="js/posts.js?v=01aeed2e"></script>
+  <script type="text/javascript" src="js/highlight.pack.js?v=08557fff"></script>
   <script>hljs.initHighlightingOnLoad();</script>
 </head>
 <body>
@@ -42,7 +45,7 @@
         <div class="subtitle">Frencil is Christoph Clark, a guy who likes science, math, and programming.</div>
       </div>
       <div class="two columns unicodes">
-        <h1>&#9732;</h1>
+        <h1><a href="#" id="theme_toggle" role="button" title="Switch to dark mode" aria-label="Switch to dark mode" onclick="return theme.toggle();">&#9788;</a></h1>
         <div class="subtitle">&#9883;</div>
       </div>
     </div>
@@ -152,7 +155,12 @@
           <div class="blurb">Free private gift registry / wish list system for families</div>
         </section>
 
+        <hr>
+
         <h5>Other Writing</h5>
+        <section class="project">
+          <a href="https://www.familygiftregistry.net/blog">Family Gift Registry Blog</a>
+        </section>
         <section class="project">
           <a href="../writing/sparkfun">SparkFun.com Articles</a>
         </section>

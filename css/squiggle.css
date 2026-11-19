@@ -10,10 +10,6 @@ body {
   -o-background-size: cover;
   background-size: cover;
   background-repeat: no-repeat;
-  background-image: -webkit-linear-gradient(rgb(253, 254, 255), rgb(232, 238, 240));
-  background-image: -o-linear-gradient(rgb(253, 254, 255), rgb(232, 238, 240));
-  background-image: -moz-linear-gradient(rgb(253, 254, 255), rgb(232, 238, 240));
-  background-image: linear-gradient(rgb(253, 254, 255), rgb(232, 238, 240));
 }
 
 hr {
@@ -44,7 +40,6 @@ h1 a, h2 a, h3 a, h4 a, h5 a {
 #sparkfun_articles h4 { font-size: 2.5rem; margin-bottom: 0; }
 
 .subtitle {
-  color: rgb(113, 119, 121);
   font-style: italic;
   font-weight:bold;
   font-size: 80%;
@@ -55,22 +50,15 @@ li {
   list-style-position: outside;
 }
 
-p ul li {
-  color: rgb(113, 119, 121);
-}
-
 a {
   text-decoration: none;
-  color: rgb(71, 140, 158);
 }
 
 a:hover {
-  color: rgb(15, 152, 189);
   text-decoration: underline;
 }
 
 .date {
-  color: rgba(107, 113, 115, 0.8);
   font-size: 80%;
 }
 
@@ -86,7 +74,6 @@ figcaption {
   margin-top: 10px;
   font-size: 85%;
   font-style: italic;
-  color: rgb(76, 80, 82);
 }
 
 blockquote { 
@@ -104,6 +91,14 @@ img {
 .unicodes { 
   text-align: right;
 }
+#theme_toggle {
+  color: inherit;
+  cursor: pointer;
+}
+#theme_toggle:hover {
+  text-decoration: none;
+  opacity: 0.7;
+}
 @media (max-width: 550px) {
   .unicodes { 
     display: none;
@@ -119,7 +114,6 @@ section.project {
 }
 
 section.project div.blurb {
-  color: rgba(107, 113, 115, 0.8);
   font-style: italic;
   font-size: 80%;
 }
@@ -140,15 +134,12 @@ div.video iframe {
 }
 
 div.copyright {
-  color: rgba(107, 113, 115, 0.8);
   font-style: italic;
   font-size: 80%;
   margin-bottom: 8px;
 }
 
 div.contents {
-  background: #f1f1f1;
-  border: 1px solid #e1e1e1;
   border-radius: 4px;
   padding: .2rem .8rem;
 }
@@ -158,16 +149,12 @@ div.contents h5 {
 }
 
 div.well {
-  background: #f1f1f1;
-  border: 1px solid #e1e1e1;
   border-radius: 4px;
   padding: .8rem;
   margin-bottom: 2.5rem;
 }
 
 div.alert {
-  background: #f6efcb;
-  border: 1px solid #e1e1e1;
   border-radius: 4px;
   padding: 1.3rem;
   margin-bottom: 2.5rem;
@@ -177,27 +164,23 @@ div.resume h1 {
   font-weight: bold;
   font-variant: small-caps;
   font-size: 6rem;
-  color: rgb(46, 90, 102);
 }
 
 div.resume h2 { 
   font-variant: small-caps;
   font-weight: bold;
   font-size: 3rem;
-  color: rgb(46, 90, 102);
 }
 
 div.resume h3 { 
   font-weight: bold;
   font-size: 2rem;
-  color: rgb(46, 90, 102);
   margin-bottom: 1rem;
 }
 
 div.resume h3 span.sub { 
   font-weight: normal;
   font-style: italic;
-  color: rgba(107, 113, 115, 0.8);
 }
 
 div.resume h4 { 
