@@ -4,7 +4,9 @@
 //
 // Both theme stylesheets are linked in the header (#theme_light, #theme_dark) so
 // switching is instant; this script just activates one and deactivates the other.
-// Light is the default. The choice is kept in sessionStorage only so it carries
+// The initial theme follows the visitor's OS/browser preference
+// (prefers-color-scheme), falling back to light. A choice made with the toggle
+// overrides that, and is kept in sessionStorage only so it carries
 // across pages within the same tab - no cookies, nothing sent to the server, and
 // it's discarded when the tab closes.
 
@@ -15,9 +17,17 @@ var theme = {
   labels: { light: "Switch to dark mode", dark: "Switch to light mode" },
 
   init: function() {
+    // Precedence: a choice made with the toggle earlier in this tab, then the
+    // OS/browser color-scheme preference, then light.
+    var saved = null;
     try {
-      if (window.sessionStorage.getItem("theme") === "dark") { this.current = "dark"; }
-    } catch (e) {} // storage unavailable (e.g. privacy settings): stay light
+      saved = window.sessionStorage.getItem("theme");
+    } catch (e) {} // storage unavailable (e.g. privacy settings)
+    if (saved === "dark" || saved === "light") {
+      this.current = saved;
+    } else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      this.current = "dark";
+    }
     this.apply();
     var self = this;
     document.addEventListener("DOMContentLoaded", function() { self.apply(); });
